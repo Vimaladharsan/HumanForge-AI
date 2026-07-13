@@ -72,7 +72,7 @@ const getVersions = async (documentId) => {
   }
 };
 
-// Compare two versions
+// Compare two versions with detailed diff
 const compareVersions = async (documentId, version1, version2) => {
   try {
     const versionPath = path.join(versionsDir, documentId);
@@ -87,42 +87,89 @@ const compareVersions = async (documentId, version1, version2) => {
     const v1Data = await fs.readJSON(version1Path);
     const v2Data = await fs.readJSON(version2Path);
     
-    // Simple diff (word-level)
+    // Line-level diff
+    const lines1 = v1Data.content.split('\n');
+    const lines2 = v2Data.content.split('\n');
+    
+    const addedLines = [];
+    const removedLines = [];
+    const modifiedLines = [];
+    
+    // Simple line-by-line comparison
+    const maxLines = Math.max(lines1.length, lines2.length);
+    
+    for (let i = 0; i < maxLines; i++) {
+      const line1 = lines1[i] || '';
+      const line2 = lines2[i] || '';
+      
+      if (line1 !== line2) {
+        if (!line1 && line2) {
+          addedLines.push({ line: i + 1, content: line2 });
+        } else if (line1 && !line2) {
+          removedLines.push({ line: i + 1, content: line1 });
+        } else {
+          modifiedLines.push({ 
+            line: i + 1, 
+            old: line1, 
+            new: line2 
+          });
+        }
+      }
+    }
+    
+    // Word-level diff for summary
     const words1 = v1Data.content.split(/\s+/);
     const words2 = v2Data.content.split(/\s+/);
     
-    const added = [];
-    const removed = [];
+    const addedWords = [];
+    const removedWords = [];
     
-    // Basic comparison
     const set1 = new Set(words1);
     const set2 = new Set(words2);
     
     words2.forEach(word => {
       if (!set1.has(word)) {
-        added.push(word);
+        addedWords.push(word);
       }
     });
     
     words1.forEach(word => {
       if (!set2.has(word)) {
-        removed.push(word);
+        removedWords.push(word);
       }
     });
+    
+    // Calculate change statistics
+    const totalWords = words1.length;
+    const changedWords = addedWords.length + removedWords.length;
+    const changePercentage = totalWords > 0 ? Math.round((changedWords / totalWords) * 100) : 0;
     
     return {
       version1: {
         id: version1,
-        timestamp: v1Data.timestamp
+        timestamp: v1Data.timestamp,
+        metadata: v1Data.metadata
       },
       version2: {
         id: version2,
-        timestamp: v2Data.timestamp
+        timestamp: v2Data.timestamp,
+        metadata: v2Data.metadata
       },
-      changes: {
-        added: added.slice(0, 50), // Limit to 50 for performance
-        removed: removed.slice(0, 50),
+      summary: {
+        totalWords: totalWords,
+        addedWords: addedWords.length,
+        removedWords: removedWords.length,
+        changePercentage: changePercentage,
         contentChanged: v1Data.content !== v2Data.content
+      },
+      lineChanges: {
+        added: addedLines.slice(0, 100),
+        removed: removedLines.slice(0, 100),
+        modified: modifiedLines.slice(0, 100)
+      },
+      wordChanges: {
+        added: addedWords.slice(0, 50),
+        removed: removedWords.slice(0, 50)
       }
     };
   } catch (error) {
@@ -146,7 +193,8 @@ const restoreVersion = async (documentId, versionId) => {
     const restoredVersion = await saveVersion(documentId, versionData.content, {
       restoredFrom: versionId,
       restoredAt: new Date().toISOString(),
-      isRestore: true
+      isRestore: true,
+      originalTimestamp: versionData.timestamp
     });
     
     return restoredVersion;
@@ -155,9 +203,48 @@ const restoreVersion = async (documentId, versionId) => {
   }
 };
 
+// Delete old versions (cleanup)
+const cleanupOldVersions = async (documentId, keepCount = 10) => {
+  try {
+    const versionPath = path.join(versionsDir, documentId);
+    const indexPath = path.join(versionPath, 'index.json');
+    
+    if (!await fs.pathExists(indexPath)) {
+      return { deleted: 0 };
+    }
+    
+    const index = await fs.readJSON(indexPath);
+    
+    if (index.length <= keepCount) {
+      return { deleted: 0 };
+    }
+    
+    // Delete oldest versions beyond keepCount
+    const versionsToDelete = index.slice(keepCount);
+    let deletedCount = 0;
+    
+    for (const version of versionsToDelete) {
+      const versionFile = path.join(versionPath, `${version.versionId}.json`);
+      if (await fs.pathExists(versionFile)) {
+        await fs.remove(versionFile);
+        deletedCount++;
+      }
+    }
+    
+    // Update index
+    const newIndex = index.slice(0, keepCount);
+    await fs.writeJSON(indexPath, newIndex, { spaces: 2 });
+    
+    return { deleted: deletedCount };
+  } catch (error) {
+    throw new Error(`Failed to cleanup versions: ${error.message}`);
+  }
+};
+
 module.exports = {
   saveVersion,
   getVersions,
   compareVersions,
-  restoreVersion
+  restoreVersion,
+  cleanupOldVersions
 };
