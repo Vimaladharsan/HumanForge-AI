@@ -2,6 +2,10 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs-extra');
 const { v4: uuidv4 } = require('uuid');
+const pdfParse = require('pdf-parse');
+const mammoth = require('mammoth');
+const marked = require('marked');
+const yaml = require('js-yaml');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -73,6 +77,76 @@ const detectFileType = (filename, content = '') => {
   return { category: 'text', type: 'txt', extension: ext };
 };
 
+// Parse file content based on type
+const parseFileContent = async (filePath, fileType) => {
+  const ext = fileType.extension.toLowerCase();
+  
+  try {
+    switch (ext) {
+      case '.pdf':
+        const pdfBuffer = await fs.readFile(filePath);
+        const pdfData = await pdfParse(pdfBuffer);
+        return pdfData.text;
+      
+      case '.doc':
+      case '.docx':
+        const docBuffer = await fs.readFile(filePath);
+        const docResult = await mammoth.extractRawText({ buffer: docBuffer });
+        return docResult.value;
+      
+      case '.md':
+      case '.markdown':
+        const mdContent = await fs.readFile(filePath, 'utf-8');
+        // Return markdown as-is, but also provide HTML version
+        return {
+          markdown: mdContent,
+          html: marked.parse(mdContent)
+        };
+      
+      case '.yaml':
+      case '.yml':
+        const yamlContent = await fs.readFile(filePath, 'utf-8');
+        const yamlData = yaml.load(yamlContent);
+        return {
+          yaml: yamlContent,
+          parsed: yamlData
+        };
+      
+      case '.json':
+        const jsonContent = await fs.readFile(filePath, 'utf-8');
+        const jsonData = JSON.parse(jsonContent);
+        return {
+          json: jsonContent,
+          parsed: jsonData
+        };
+      
+      case '.xml':
+        return await fs.readFile(filePath, 'utf-8');
+      
+      case '.txt':
+      case '.rtf':
+      case '.odt':
+      case '.java':
+      case '.py':
+      case '.js':
+      case '.ts':
+      case '.c':
+      case '.cpp':
+      case '.cs':
+      case '.go':
+      case '.rs':
+      case '.php':
+      case '.sql':
+      case '.html':
+      case '.css':
+      default:
+        return await fs.readFile(filePath, 'utf-8');
+    }
+  } catch (error) {
+    throw new Error(`Failed to parse ${ext} file: ${error.message}`);
+  }
+};
+
 // Process uploaded file
 const processFile = async (req) => {
   return new Promise((resolve, reject) => {
@@ -85,14 +159,24 @@ const processFile = async (req) => {
         const file = req.file;
         const fileType = detectFileType(file.originalname);
         
-        // Read file content based on type
-        let content = '';
+        // Parse file content based on type
+        const content = await parseFileContent(file.path, fileType);
         
-        if (fileType.category === 'document') {
-          // Document parsing will be implemented in the next commit
-          content = await fs.readFile(file.path, 'utf-8');
-        } else {
-          content = await fs.readFile(file.path, 'utf-8');
+        // Handle different content return types
+        let textContent = content;
+        let metadata = {};
+        
+        if (typeof content === 'object' && content !== null && !Array.isArray(content)) {
+          if (content.markdown) {
+            textContent = content.markdown;
+            metadata.html = content.html;
+          } else if (content.yaml) {
+            textContent = content.yaml;
+            metadata.parsed = content.parsed;
+          } else if (content.json) {
+            textContent = content.json;
+            metadata.parsed = content.parsed;
+          }
         }
         
         resolve({
@@ -103,7 +187,8 @@ const processFile = async (req) => {
           size: file.size,
           mimetype: file.mimetype,
           fileType: fileType,
-          content: content
+          content: textContent,
+          metadata: metadata
         });
       } catch (error) {
         reject(error);
@@ -120,6 +205,7 @@ const getSupportedFormats = () => {
 module.exports = {
   upload,
   processFile,
+  parseFileContent,
   detectFileType,
   getSupportedFormats
 };
