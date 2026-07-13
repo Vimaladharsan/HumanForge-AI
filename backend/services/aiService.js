@@ -1,4 +1,5 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const promptEngine = require('./promptEngine');
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
@@ -8,21 +9,9 @@ const humanizeText = async (text, tone = 'professional', options = {}) => {
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
     
-    const toneInstructions = {
-      natural: 'Rewrite the text to sound more natural and human-like.',
-      professional: 'Rewrite the text with a professional, business-appropriate tone.',
-      academic: 'Rewrite the text with an academic, scholarly tone suitable for research papers.',
-      friendly: 'Rewrite the text with a friendly, conversational tone.',
-      business: 'Rewrite the text with a formal business tone.',
-      technical: 'Rewrite the text with clear technical language appropriate for documentation.',
-      simple: 'Simplify the text to make it easier to understand.',
-      expanded: 'Expand the text with more detail and elaboration.',
-      concise: 'Make the text more concise and to the point.'
-    };
-    
-    const instruction = toneInstructions[tone] || toneInstructions.professional;
-    
-    const prompt = `${instruction}\n\nOriginal text:\n${text}\n\nProvide the rewritten text and explain the changes made.`;
+    // Use prompt engine for specialized prompts
+    const basePrompt = promptEngine.generatePrompt('humanize', tone, options);
+    const prompt = `${basePrompt}\n\nOriginal text:\n${text}\n\nProvide the rewritten text and explain the changes made.`;
     
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -32,7 +21,7 @@ const humanizeText = async (text, tone = 'professional', options = {}) => {
       originalText: text,
       humanizedText: responseText,
       tone: tone,
-      explanation: 'Text has been rewritten with the specified tone.'
+      explanation: 'Text has been rewritten with the specified tone using specialized AI workflow.'
     };
   } catch (error) {
     throw new Error(`AI humanization failed: ${error.message}`);
@@ -40,22 +29,13 @@ const humanizeText = async (text, tone = 'professional', options = {}) => {
 };
 
 // Review document
-const reviewDocument = async (content, fileType) => {
+const reviewDocument = async (content, fileType, reviewType = 'general') => {
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
     
-    const prompt = `Review the following ${fileType} document for:
-1. Grammar and spelling errors
-2. Readability issues
-3. Vocabulary improvements
-4. Passive voice usage
-5. Overall structure and flow
-6. Writing quality score (1-10)
-
-Provide specific suggestions with explanations for each issue found.
-
-Document content:
-${content}`;
+    // Use prompt engine for specialized review prompts
+    const basePrompt = promptEngine.generatePrompt('review', reviewType);
+    const prompt = `${basePrompt}\n\nDocument type: ${fileType}\n\nDocument content:\n${content}`;
     
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -64,6 +44,7 @@ ${content}`;
     return {
       review: responseText,
       fileType: fileType,
+      reviewType: reviewType,
       timestamp: new Date().toISOString()
     };
   } catch (error) {
@@ -72,25 +53,13 @@ ${content}`;
 };
 
 // Analyze code
-const analyzeCode = async (code, language) => {
+const analyzeCode = async (code, language, analysisType = 'review') => {
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
     
-    const prompt = `Analyze the following ${language} code for:
-1. Code explanation (what it does)
-2. Potential bugs or issues
-3. Refactoring suggestions
-4. Naming improvements
-5. Performance recommendations
-6. Best practices violations
-7. Documentation needs
-
-Provide specific, actionable suggestions with explanations.
-
-Code:
-\`\`\`${language}
-${code}
-\`\`\``;
+    // Use prompt engine for specialized code analysis prompts
+    const basePrompt = promptEngine.generatePrompt('code', analysisType);
+    const prompt = `${basePrompt}\n\nLanguage: ${language}\n\nCode:\n\`\`\`${language}\n${code}\n\`\`\``;
     
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -99,6 +68,7 @@ ${code}
     return {
       analysis: responseText,
       language: language,
+      analysisType: analysisType,
       timestamp: new Date().toISOString()
     };
   } catch (error) {
@@ -107,22 +77,13 @@ ${code}
 };
 
 // Optimize resume
-const optimizeResume = async (content) => {
+const optimizeResume = async (content, optimizationType = 'content') => {
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
     
-    const prompt = `Optimize the following resume for ATS (Applicant Tracking Systems) and improve its overall effectiveness:
-1. ATS keyword optimization
-2. Structure and formatting improvements
-3. Content enhancement
-4. Achievement quantification suggestions
-5. Skills section improvements
-6. Summary optimization
-
-Provide specific suggestions with explanations.
-
-Resume content:
-${content}`;
+    // Use prompt engine for specialized resume optimization prompts
+    const basePrompt = promptEngine.generatePrompt('resume', optimizationType);
+    const prompt = `${basePrompt}\n\nResume content:\n${content}`;
     
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -130,6 +91,7 @@ ${content}`;
     
     return {
       optimization: responseText,
+      optimizationType: optimizationType,
       timestamp: new Date().toISOString()
     };
   } catch (error) {
@@ -138,19 +100,13 @@ ${content}`;
 };
 
 // Explain content
-const explainContent = async (content, context = '') => {
+const explainContent = async (content, context = '', explanationType = 'concept') => {
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
     
-    const prompt = `Explain the following content in clear, simple terms${context ? ` given this context: ${context}` : ''}:
-1. What is the main purpose?
-2. Key concepts and terminology
-3. How it works (if applicable)
-4. Why it matters
-5. Practical applications
-
-Content to explain:
-${content}`;
+    // Use prompt engine for specialized explanation prompts
+    const basePrompt = promptEngine.generatePrompt('explain', explanationType);
+    const prompt = `${basePrompt}\n\n${context ? `Context: ${context}\n\n` : ''}Content to explain:\n${content}`;
     
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -159,10 +115,34 @@ ${content}`;
     return {
       explanation: responseText,
       context: context,
+      explanationType: explanationType,
       timestamp: new Date().toISOString()
     };
   } catch (error) {
     throw new Error(`Content explanation failed: ${error.message}`);
+  }
+};
+
+// Review documentation
+const reviewDocumentation = async (content, docType = 'readme') => {
+  try {
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    
+    // Use prompt engine for specialized documentation prompts
+    const basePrompt = promptEngine.generatePrompt('documentation', docType);
+    const prompt = `${basePrompt}\n\nDocumentation content:\n${content}`;
+    
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const responseText = response.text();
+    
+    return {
+      review: responseText,
+      docType: docType,
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    throw new Error(`Documentation review failed: ${error.message}`);
   }
 };
 
@@ -171,5 +151,6 @@ module.exports = {
   reviewDocument,
   analyzeCode,
   optimizeResume,
-  explainContent
+  explainContent,
+  reviewDocumentation
 };

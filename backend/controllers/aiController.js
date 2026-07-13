@@ -20,8 +20,8 @@ const humanizeText = async (req, res) => {
 // Review document
 const reviewDocument = async (req, res) => {
   try {
-    const { content, fileType } = req.body;
-    const result = await aiService.reviewDocument(content, fileType);
+    const { content, fileType, reviewType } = req.body;
+    const result = await aiService.reviewDocument(content, fileType, reviewType);
     res.json({
       success: true,
       data: result
@@ -37,8 +37,8 @@ const reviewDocument = async (req, res) => {
 // Analyze code
 const analyzeCode = async (req, res) => {
   try {
-    const { code, language } = req.body;
-    const result = await aiService.analyzeCode(code, language);
+    const { code, language, analysisType } = req.body;
+    const result = await aiService.analyzeCode(code, language, analysisType);
     res.json({
       success: true,
       data: result
@@ -54,8 +54,8 @@ const analyzeCode = async (req, res) => {
 // Optimize resume
 const optimizeResume = async (req, res) => {
   try {
-    const { content } = req.body;
-    const result = await aiService.optimizeResume(content);
+    const { content, optimizationType } = req.body;
+    const result = await aiService.optimizeResume(content, optimizationType);
     res.json({
       success: true,
       data: result
@@ -71,8 +71,25 @@ const optimizeResume = async (req, res) => {
 // Explain content
 const explainContent = async (req, res) => {
   try {
-    const { content, context } = req.body;
-    const result = await aiService.explainContent(content, context);
+    const { content, context, explanationType } = req.body;
+    const result = await aiService.explainContent(content, context, explanationType);
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+// Review documentation
+const reviewDocumentation = async (req, res) => {
+  try {
+    const { content, docType } = req.body;
+    const result = await aiService.reviewDocumentation(content, docType);
     res.json({
       success: true,
       data: result
@@ -90,5 +107,6 @@ module.exports = {
   reviewDocument,
   analyzeCode,
   optimizeResume,
-  explainContent
+  explainContent,
+  reviewDocumentation
 };
