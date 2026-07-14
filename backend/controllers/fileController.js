@@ -16,7 +16,7 @@ const uploadFile = async (req, res) => {
   }
 };
 
-// Detect file type
+
 const detectFileType = async (req, res) => {
   try {
     const { filename, content } = req.body;
