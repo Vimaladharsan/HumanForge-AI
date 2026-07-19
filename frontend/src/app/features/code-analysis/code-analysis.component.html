@@ -1,0 +1,104 @@
+<div class="code-analysis-container">
+  <div class="page-header">
+    <h1>Code Analysis</h1>
+    <p>Review, explain, refactor, or optimize your code with AI</p>
+  </div>
+
+  <!-- Controls -->
+  <mat-card class="controls-card">
+    <div class="controls-row">
+      <div class="control-group">
+        <label>AI Provider</label>
+        <mat-button-toggle-group [(ngModel)]="selectedProvider" class="provider-toggle">
+          <mat-button-toggle value="gemini"><mat-icon>bolt</mat-icon> Gemini</mat-button-toggle>
+          <mat-button-toggle value="claude"><mat-icon>psychology</mat-icon> Claude</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <div class="control-group">
+        <label>Language</label>
+        <mat-form-field appearance="outline" class="small-select">
+          <mat-select [(ngModel)]="selectedLanguage">
+            <mat-option *ngFor="let lang of languages" [value]="lang">{{ lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="control-group">
+        <label>Analysis Type</label>
+        <mat-form-field appearance="outline" class="small-select">
+          <mat-select [(ngModel)]="selectedAnalysisType">
+            <mat-option *ngFor="let t of analysisTypes" [value]="t.value">{{ t.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Split view -->
+  <div class="split-view">
+    <!-- Code input -->
+    <mat-card class="panel">
+      <mat-card-header>
+        <mat-card-title>Your Code</mat-card-title>
+        <span class="char-count">{{ code.split('\n').length }} lines</span>
+      </mat-card-header>
+      <mat-card-content>
+        <textarea [(ngModel)]="code" placeholder="Paste your code here..." class="code-input" rows="16" spellcheck="false"></textarea>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="analyze()" [disabled]="loading || !code.trim()">
+          <mat-icon>{{ loading ? 'hourglass_empty' : 'code' }}</mat-icon>
+          {{ loading ? 'Analyzing...' : 'Analyze' }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Result -->
+    <mat-card class="panel">
+      <mat-card-header>
+        <mat-card-title>Analysis Result</mat-card-title>
+        <div class="panel-actions" *ngIf="result">
+          <span class="provider-badge" [class.claude]="provider === 'claude'">{{ provider }}</span>
+          <button mat-icon-button (click)="copyResult()" matTooltip="Copy result"><mat-icon>content_copy</mat-icon></button>
+          <button mat-icon-button (click)="showChat = true" matTooltip="Ask follow-up"><mat-icon>chat</mat-icon></button>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="error" class="error-message"><mat-icon>error</mat-icon> {{ error }}</div>
+        <div *ngIf="!result && !loading && !error" class="placeholder-text">Analysis will appear here.</div>
+        <div *ngIf="result" class="result-text" [innerHTML]="result | markdownToHtml"></div>
+        <div *ngIf="loading" class="loading-state">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Analyzing with {{ selectedProvider === 'claude' ? 'Claude Sonnet' : 'Gemini 2.0 Flash' }}...</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Chat -->
+  <mat-card class="chat-card" *ngIf="showChat && result">
+    <mat-card-header>
+      <mat-card-title><mat-icon>chat</mat-icon> Follow-up Chat</mat-card-title>
+      <mat-card-subtitle>Ask questions about the analysis</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="chat-history">
+        <div *ngFor="let msg of chatHistory" class="chat-message" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
+          <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
+          <div class="message-bubble">{{ msg.content }}</div>
+        </div>
+        <div *ngIf="chatLoading" class="chat-message assistant">
+          <mat-icon>smart_toy</mat-icon>
+          <div class="message-bubble typing">Thinking...</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <mat-form-field appearance="outline" class="chat-field">
+          <input matInput [(ngModel)]="chatInput" placeholder="Ask about the code or analysis..." (keyup.enter)="sendChat()" [disabled]="chatLoading" />
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="sendChat()" [disabled]="chatLoading || !chatInput.trim()">
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

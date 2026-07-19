@@ -1,0 +1,169 @@
+<div class="humanize-container">
+  <div class="page-header">
+    <h1>AI Humanizer</h1>
+    <p>Make AI-generated text sound natural and human-like</p>
+  </div>
+
+  <!-- Controls -->
+  <mat-card class="controls-card">
+    <div class="controls-row">
+      <!-- Provider toggle -->
+      <div class="control-group">
+        <label>AI Provider</label>
+        <mat-button-toggle-group [(ngModel)]="selectedProvider" class="provider-toggle">
+          <mat-button-toggle value="gemini">
+            <mat-icon>bolt</mat-icon> Gemini
+          </mat-button-toggle>
+          <mat-button-toggle value="claude">
+            <mat-icon>psychology</mat-icon> Claude
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      <!-- Tone selector -->
+      <div class="control-group">
+        <label>Tone</label>
+        <mat-form-field appearance="outline" class="tone-select">
+          <mat-select [(ngModel)]="selectedTone">
+            <mat-option *ngFor="let t of tones" [value]="t.value">{{ t.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Comparison area -->
+  <div class="split-view">
+    <!-- Input -->
+    <mat-card class="panel">
+      <mat-card-header>
+        <mat-card-title>Original Text</mat-card-title>
+        <span class="char-count">{{ inputText.length }} chars</span>
+      </mat-card-header>
+      <mat-card-content>
+        <textarea
+          [(ngModel)]="inputText"
+          placeholder="Paste your AI-generated text here..."
+          class="text-input"
+          rows="12">
+        </textarea>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="humanize()" [disabled]="loading || !inputText.trim()">
+          <mat-icon>{{ loading ? 'hourglass_empty' : 'auto_fix_high' }}</mat-icon>
+          {{ loading ? 'Humanizing...' : 'Humanize' }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Output -->
+    <mat-card class="panel">
+      <mat-card-header>
+        <mat-card-title>Humanized Text</mat-card-title>
+        <div class="panel-actions" *ngIf="result">
+          <button mat-icon-button (click)="copyResult()" matTooltip="Copy to clipboard">
+            <mat-icon>content_copy</mat-icon>
+          </button>
+          <button mat-icon-button (click)="openChat()" matTooltip="Ask a follow-up question">
+            <mat-icon>chat</mat-icon>
+          </button>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="error" class="error-message">
+          <mat-icon>error</mat-icon> {{ error }}
+        </div>
+        <div *ngIf="!result && !loading && !error" class="placeholder-text">
+          Your humanized text will appear here after clicking Humanize.
+        </div>
+        <div *ngIf="result" class="result-text">{{ result.humanizedText }}</div>
+        <div *ngIf="loading" class="loading-state">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Processing with {{ selectedProvider === 'claude' ? 'Claude Sonnet' : 'Gemini 2.0 Flash' }}...</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- AI Detection Score -->
+  <mat-card class="score-card" *ngIf="result">
+    <mat-card-header>
+      <mat-card-title>AI Detection Score</mat-card-title>
+      <mat-card-subtitle>How human does the text sound? (higher = more human)</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="score-comparison">
+        <div class="score-block">
+          <div class="score-label">Before</div>
+          <div class="score-circle" [style.border-color]="scoreColor(result.detectionScores.before.humanScore)">
+            <span class="score-value" [style.color]="scoreColor(result.detectionScores.before.humanScore)">
+              {{ result.detectionScores.before.humanScore }}
+            </span>
+            <span class="score-unit">/ 100</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar" [style.width.%]="result.detectionScores.before.humanScore"
+              [style.background]="scoreColor(result.detectionScores.before.humanScore)"></div>
+          </div>
+        </div>
+
+        <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+
+        <div class="score-block">
+          <div class="score-label">After</div>
+          <div class="score-circle" [style.border-color]="scoreColor(result.detectionScores.after.humanScore)">
+            <span class="score-value" [style.color]="scoreColor(result.detectionScores.after.humanScore)">
+              {{ result.detectionScores.after.humanScore }}
+            </span>
+            <span class="score-unit">/ 100</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar" [style.width.%]="result.detectionScores.after.humanScore"
+              [style.background]="scoreColor(result.detectionScores.after.humanScore)"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signals -->
+      <div class="signals" *ngIf="result.detectionScores.after.signals.length">
+        <h4>Signals detected in output:</h4>
+        <div class="signal-chip" *ngFor="let s of result.detectionScores.after.signals"
+          [class.positive]="s.impact > 0" [class.negative]="s.impact < 0">
+          <mat-icon>{{ s.impact > 0 ? 'thumb_up' : 'warning' }}</mat-icon>
+          {{ s.label }}
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Chat follow-up -->
+  <mat-card class="chat-card" *ngIf="showChat && result">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>chat</mat-icon> Follow-up Chat
+      </mat-card-title>
+      <mat-card-subtitle>Ask questions about the humanized text</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="chat-history">
+        <div *ngFor="let msg of chatHistory" class="chat-message" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
+          <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
+          <div class="message-bubble">{{ msg.content }}</div>
+        </div>
+        <div *ngIf="chatLoading" class="chat-message assistant">
+          <mat-icon>smart_toy</mat-icon>
+          <div class="message-bubble typing">Thinking...</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <mat-form-field appearance="outline" class="chat-field">
+          <input matInput [(ngModel)]="chatInput" placeholder="Ask a follow-up question..."
+            (keyup.enter)="sendChat()" [disabled]="chatLoading" />
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="sendChat()" [disabled]="chatLoading || !chatInput.trim()">
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

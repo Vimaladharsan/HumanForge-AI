@@ -1,0 +1,99 @@
+<div class="review-container">
+  <div class="page-header">
+    <h1>Document Review</h1>
+    <p>Get AI-powered feedback on grammar, clarity, tone, and structure</p>
+  </div>
+
+  <mat-card class="controls-card">
+    <div class="controls-row">
+      <div class="control-group">
+        <label>AI Provider</label>
+        <mat-button-toggle-group [(ngModel)]="selectedProvider" class="provider-toggle">
+          <mat-button-toggle value="gemini"><mat-icon>bolt</mat-icon> Gemini</mat-button-toggle>
+          <mat-button-toggle value="claude"><mat-icon>psychology</mat-icon> Claude</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <div class="control-group">
+        <label>File Type</label>
+        <mat-form-field appearance="outline" class="small-select">
+          <mat-select [(ngModel)]="fileType">
+            <mat-option *ngFor="let f of fileTypes" [value]="f">{{ f }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="control-group">
+        <label>Review Type</label>
+        <mat-form-field appearance="outline" class="small-select">
+          <mat-select [(ngModel)]="selectedReviewType">
+            <mat-option *ngFor="let r of reviewTypes" [value]="r.value">{{ r.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card>
+
+  <div class="split-view">
+    <mat-card class="panel">
+      <mat-card-header>
+        <mat-card-title>Document Content</mat-card-title>
+        <span class="char-count">{{ content.length }} chars</span>
+      </mat-card-header>
+      <mat-card-content>
+        <textarea [(ngModel)]="content" placeholder="Paste your document text here..." class="text-input" rows="16"></textarea>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="review()" [disabled]="loading || !content.trim()">
+          <mat-icon>{{ loading ? 'hourglass_empty' : 'rate_review' }}</mat-icon>
+          {{ loading ? 'Reviewing...' : 'Review Document' }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="panel">
+      <mat-card-header>
+        <mat-card-title>Review Feedback</mat-card-title>
+        <div class="panel-actions" *ngIf="result">
+          <span class="provider-badge" [class.claude]="provider === 'claude'">{{ provider }}</span>
+          <button mat-icon-button (click)="copyResult()" matTooltip="Copy result"><mat-icon>content_copy</mat-icon></button>
+          <button mat-icon-button (click)="showChat = true" matTooltip="Ask follow-up"><mat-icon>chat</mat-icon></button>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="error" class="error-message"><mat-icon>error</mat-icon> {{ error }}</div>
+        <div *ngIf="!result && !loading && !error" class="placeholder-text">Review feedback will appear here.</div>
+        <div *ngIf="result" class="result-text" [innerHTML]="result | markdownToHtml"></div>
+        <div *ngIf="loading" class="loading-state">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Reviewing with {{ selectedProvider === 'claude' ? 'Claude Sonnet' : 'Gemini 2.0 Flash' }}...</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-card class="chat-card" *ngIf="showChat && result">
+    <mat-card-header>
+      <mat-card-title><mat-icon>chat</mat-icon> Follow-up Chat</mat-card-title>
+      <mat-card-subtitle>Ask questions about the review feedback</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="chat-history">
+        <div *ngFor="let msg of chatHistory" class="chat-message" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
+          <mat-icon>{{ msg.role === 'user' ? 'person' : 'smart_toy' }}</mat-icon>
+          <div class="message-bubble">{{ msg.content }}</div>
+        </div>
+        <div *ngIf="chatLoading" class="chat-message assistant">
+          <mat-icon>smart_toy</mat-icon>
+          <div class="message-bubble typing">Thinking...</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <mat-form-field appearance="outline" class="chat-field">
+          <input matInput [(ngModel)]="chatInput" placeholder="Ask about the document or feedback..." (keyup.enter)="sendChat()" [disabled]="chatLoading" />
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="sendChat()" [disabled]="chatLoading || !chatInput.trim()">
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
