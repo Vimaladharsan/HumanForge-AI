@@ -72,6 +72,19 @@ const getVersions = async (documentId) => {
   }
 };
 
+// Get a single version's full content
+const getVersion = async (documentId, versionId) => {
+  try {
+    const versionFile = path.join(versionsDir, documentId, `${versionId}.json`);
+    if (!await fs.pathExists(versionFile)) {
+      throw new Error('Version not found');
+    }
+    return await fs.readJSON(versionFile);
+  } catch (error) {
+    throw new Error(`Failed to get version: ${error.message}`);
+  }
+};
+
 // Compare two versions with detailed diff
 const compareVersions = async (documentId, version1, version2) => {
   try {
@@ -244,6 +257,7 @@ const cleanupOldVersions = async (documentId, keepCount = 10) => {
 module.exports = {
   saveVersion,
   getVersions,
+  getVersion,
   compareVersions,
   restoreVersion,
   cleanupOldVersions

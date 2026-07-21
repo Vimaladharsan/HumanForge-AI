@@ -1,0 +1,163 @@
+<div class="analytics-container">
+  <div class="page-header">
+    <h1>Analytics</h1>
+    <p>Get detailed writing or code metrics without calling an AI model</p>
+  </div>
+
+  <mat-card class="controls-card">
+    <div class="controls-row">
+      <div class="control-group">
+        <label>Mode</label>
+        <mat-button-toggle-group [value]="mode" (change)="setMode($event.value)">
+          <mat-button-toggle value="document"><mat-icon>description</mat-icon> Document</mat-button-toggle>
+          <mat-button-toggle value="code"><mat-icon>code</mat-icon> Code</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+      <div class="control-group" *ngIf="mode === 'code'">
+        <label>Language</label>
+        <mat-form-field appearance="outline" class="small-select">
+          <mat-select [(ngModel)]="selectedLanguage">
+            <mat-option *ngFor="let lang of languages" [value]="lang">{{ lang }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card>
+
+  <mat-card class="input-card">
+    <mat-card-header>
+      <mat-card-title>{{ mode === 'document' ? 'Document Text' : 'Code' }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <textarea [(ngModel)]="content" class="text-input" rows="10"
+        [placeholder]="mode === 'document' ? 'Paste text to analyze...' : 'Paste code to analyze...'"></textarea>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="analyze()" [disabled]="loading || !content.trim()">
+        <mat-icon>{{ loading ? 'hourglass_empty' : 'analytics' }}</mat-icon>
+        {{ loading ? 'Analyzing...' : 'Analyze' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <div *ngIf="error" class="error-message">
+    <mat-icon>error</mat-icon> {{ error }}
+  </div>
+
+  <!-- Document results -->
+  <div *ngIf="docResult" class="results">
+    <div class="stat-grid">
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ docResult.wordCount }}</span>
+        <span class="stat-label">Words</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ docResult.sentenceCount }}</span>
+        <span class="stat-label">Sentences</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ docResult.paragraphCount }}</span>
+        <span class="stat-label">Paragraphs</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ docResult.readingTime }}m</span>
+        <span class="stat-label">Reading Time</span>
+      </mat-card>
+      <mat-card class="stat-card highlight">
+        <span class="stat-value">{{ docResult.readabilityScore }}</span>
+        <span class="stat-label">Readability: {{ readabilityLabel(docResult.readabilityScore) }}</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ docResult.gradeLevel }}</span>
+        <span class="stat-label">Grade Level</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ docResult.vocabularyDiversity }}%</span>
+        <span class="stat-label">Vocabulary Diversity</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ docResult.passiveVoiceCount }}</span>
+        <span class="stat-label">Passive Voice Uses</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value" [style.color]="sentimentColor(docResult.sentiment)">{{ docResult.sentiment }}</span>
+        <span class="stat-label">Sentiment</span>
+      </mat-card>
+    </div>
+
+    <mat-card class="detail-card" *ngIf="docResult.repeatedWords.length">
+      <mat-card-header><mat-card-title>Repeated Words</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <span class="word-chip" *ngFor="let w of docResult.repeatedWords">{{ w.word }} ({{ w.count }})</span>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="detail-card" *ngIf="docResult.longSentences.length">
+      <mat-card-header><mat-card-title>Long Sentences ({{'>'}}30 words)</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <p class="sentence-item" *ngFor="let s of docResult.longSentences">{{ s.text }}</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="detail-card" *ngIf="docResult.complexWords.length">
+      <mat-card-header><mat-card-title>Complex Words</mat-card-title></mat-card-header>
+      <mat-card-content>
+        <span class="word-chip" *ngFor="let w of docResult.complexWords">{{ w.word }} ({{ w.syllables }} syllables)</span>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Code results -->
+  <div *ngIf="codeResult" class="results">
+    <div class="stat-grid">
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ codeResult.linesOfCode }}</span>
+        <span class="stat-label">Total Lines</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ codeResult.codeLines }}</span>
+        <span class="stat-label">Code Lines</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ codeResult.commentLines }}</span>
+        <span class="stat-label">Comment Lines</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ codeResult.blankLines }}</span>
+        <span class="stat-label">Blank Lines</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ codeResult.functions }}</span>
+        <span class="stat-label">Functions</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ codeResult.classes }}</span>
+        <span class="stat-label">Classes</span>
+      </mat-card>
+      <mat-card class="stat-card highlight">
+        <span class="stat-value">{{ codeResult.maintainabilityIndex }}</span>
+        <span class="stat-label">Maintainability Index</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ codeResult.complexity }}</span>
+        <span class="stat-label">Cyclomatic Complexity</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ codeResult.nestingDepth }}</span>
+        <span class="stat-label">Max Nesting Depth</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ codeResult.duplicateLines }}</span>
+        <span class="stat-label">Duplicate Lines</span>
+      </mat-card>
+      <mat-card class="stat-card">
+        <span class="stat-value">{{ codeResult.imports }}</span>
+        <span class="stat-label">Imports</span>
+      </mat-card>
+      <mat-card class="stat-card" [class.warn]="codeResult.TODOs > 0">
+        <span class="stat-value">{{ codeResult.TODOs }}</span>
+        <span class="stat-label">TODOs / FIXMEs</span>
+      </mat-card>
+    </div>
+  </div>
+</div>

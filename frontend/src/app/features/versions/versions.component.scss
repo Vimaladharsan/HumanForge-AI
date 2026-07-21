@@ -1,0 +1,109 @@
+.versions-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 20px;
+  h1 { margin: 0 0 4px; font-size: 28px; font-weight: 600; }
+  p { margin: 0; color: #666; }
+}
+
+.controls-card {
+  margin-bottom: 20px;
+  padding: 16px;
+  .controls-row { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .doc-id-field { width: 260px; margin-bottom: -20px; }
+}
+
+.error-message {
+  color: #f44336;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #fff3f3;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.input-card, .list-card, .view-card, .compare-card { margin-bottom: 20px; }
+
+.text-input {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  &:focus { outline: none; border-color: #3f51b5; }
+}
+
+.label-field { width: 100%; }
+
+.list-card mat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.loading-state, .empty-state {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  color: #999;
+}
+
+.version-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px;
+  border-bottom: 1px solid #f0f0f0;
+  &:last-child { border-bottom: none; }
+  &.selected { background: #f5f6ff; }
+}
+
+.version-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.version-label { font-size: 14px; font-weight: 600; }
+.version-date { font-size: 12px; color: #999; }
+
+.content-preview {
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
+  background: #fafafa;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.compare-summary {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  .compare-stat { font-size: 14px; color: #555; }
+}
+
+.diff-block h4 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; color: #888; }
+
+.diff-line {
+  font-family: monospace;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.diff-old { color: #c62828; background: #ffebee; padding: 2px 6px; border-radius: 4px; }
+.diff-new { color: #2e7d32; background: #e8f5e9; padding: 2px 6px; border-radius: 4px; margin-top: 2px; }

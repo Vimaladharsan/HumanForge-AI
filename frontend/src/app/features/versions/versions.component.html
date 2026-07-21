@@ -1,0 +1,97 @@
+<div class="versions-container">
+  <div class="page-header">
+    <h1>Version History</h1>
+    <p>Save snapshots of your content and compare or restore them later</p>
+  </div>
+
+  <mat-card class="controls-card">
+    <div class="controls-row">
+      <mat-form-field appearance="outline" class="doc-id-field">
+        <mat-label>Document ID</mat-label>
+        <input matInput [(ngModel)]="documentId" placeholder="e.g. doc-abc123" (keyup.enter)="loadVersions()" />
+      </mat-form-field>
+      <button mat-stroked-button (click)="generateId()">
+        <mat-icon>auto_awesome</mat-icon> Generate New ID
+      </button>
+      <button mat-raised-button color="primary" (click)="loadVersions()" [disabled]="!documentId.trim() || loading">
+        <mat-icon>refresh</mat-icon> Load Versions
+      </button>
+    </div>
+  </mat-card>
+
+  <div *ngIf="error" class="error-message">
+    <mat-icon>error</mat-icon> {{ error }}
+  </div>
+
+  <mat-card class="input-card" *ngIf="documentId">
+    <mat-card-header>
+      <mat-card-title>Save a New Version</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <textarea [(ngModel)]="content" class="text-input" rows="8" placeholder="Paste content to save as a version..."></textarea>
+      <mat-form-field appearance="outline" class="label-field">
+        <mat-label>Label (optional)</mat-label>
+        <input matInput [(ngModel)]="label" placeholder="e.g. First draft" />
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="saveVersion()" [disabled]="saving || !content.trim()">
+        <mat-icon>{{ saving ? 'hourglass_empty' : 'save' }}</mat-icon>
+        {{ saving ? 'Saving...' : 'Save Version' }}
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="list-card" *ngIf="documentId">
+    <mat-card-header>
+      <mat-card-title>Versions ({{ versions.length }})</mat-card-title>
+      <button mat-raised-button color="accent" *ngIf="compareSelection.length === 2" (click)="compare()">
+        <mat-icon>compare_arrows</mat-icon> Compare Selected
+      </button>
+    </mat-card-header>
+    <mat-card-content>
+      <div *ngIf="loading" class="loading-state">
+        <mat-spinner diameter="30"></mat-spinner>
+      </div>
+      <div *ngIf="!loading && versions.length === 0" class="empty-state">
+        No versions saved yet for this document ID.
+      </div>
+      <div class="version-row" *ngFor="let v of versions" [class.selected]="viewingVersionId === v.versionId">
+        <mat-checkbox [checked]="compareSelection.includes(v.versionId)"
+          (change)="toggleCompareSelection(v.versionId)"></mat-checkbox>
+        <div class="version-info" (click)="viewVersion(v.versionId)">
+          <span class="version-label">{{ v.metadata?.label || (v.metadata?.isRestore ? 'Restored version' : 'Untitled version') }}</span>
+          <span class="version-date">{{ v.timestamp | date:'medium' }}</span>
+        </div>
+        <button mat-icon-button (click)="restore(v.versionId)" matTooltip="Restore this version">
+          <mat-icon>restore</mat-icon>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="view-card" *ngIf="viewingContent !== null">
+    <mat-card-header><mat-card-title>Version Content</mat-card-title></mat-card-header>
+    <mat-card-content>
+      <div class="content-preview">{{ viewingContent }}</div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="compare-card" *ngIf="comparison">
+    <mat-card-header><mat-card-title>Comparison</mat-card-title></mat-card-header>
+    <mat-card-content>
+      <div class="compare-summary">
+        <span class="compare-stat"><strong>{{ comparison.summary.addedWords }}</strong> words added</span>
+        <span class="compare-stat"><strong>{{ comparison.summary.removedWords }}</strong> words removed</span>
+        <span class="compare-stat"><strong>{{ comparison.summary.changePercentage }}%</strong> changed</span>
+      </div>
+      <div class="diff-block" *ngIf="comparison.lineChanges.modified.length">
+        <h4>Modified Lines</h4>
+        <div class="diff-line" *ngFor="let l of comparison.lineChanges.modified">
+          <div class="diff-old">- {{ l.old }}</div>
+          <div class="diff-new">+ {{ l.new }}</div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

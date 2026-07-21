@@ -34,6 +34,23 @@ const getVersions = async (req, res) => {
   }
 };
 
+// Get a single version
+const getVersion = async (req, res) => {
+  try {
+    const { documentId, versionId } = req.params;
+    const version = await versionService.getVersion(documentId, versionId);
+    res.json({
+      success: true,
+      data: version
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
 // Compare versions
 const compareVersions = async (req, res) => {
   try {
@@ -71,6 +88,7 @@ const restoreVersion = async (req, res) => {
 module.exports = {
   saveVersion,
   getVersions,
+  getVersion,
   compareVersions,
   restoreVersion
 };

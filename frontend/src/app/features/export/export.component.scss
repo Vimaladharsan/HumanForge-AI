@@ -1,0 +1,65 @@
+.export-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 20px;
+  h1 { margin: 0 0 4px; font-size: 28px; font-weight: 600; }
+  p { margin: 0; color: #666; }
+}
+
+.input-card { margin-bottom: 20px; }
+
+.text-input {
+  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  &:focus { outline: none; border-color: #3f51b5; }
+}
+
+.options-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  .field { flex: 1; min-width: 160px; margin-bottom: -20px; }
+  .field.small { flex: 0 0 180px; }
+}
+
+.error-message {
+  color: #f44336;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #fff3f3;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.result-card { background: #f5faf5; }
+
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.success-icon { color: #4caf50; font-size: 32px; width: 32px; height: 32px; }
+
+.result-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.result-filename { font-weight: 600; font-size: 14px; }
+.result-meta { font-size: 12px; color: #888; }

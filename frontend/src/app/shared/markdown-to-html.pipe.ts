@@ -1,11 +1,11 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Pipe, PipeTransform, SecurityContext } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Pipe({ name: 'markdownToHtml' })
 export class MarkdownToHtmlPipe implements PipeTransform {
   constructor(private sanitizer: DomSanitizer) {}
 
-  transform(value: string | null): SafeHtml {
+  transform(value: string | null): string {
     if (!value) return '';
     let html = value
       // Code blocks
@@ -30,6 +30,6 @@ export class MarkdownToHtmlPipe implements PipeTransform {
       .replace(/\n{2,}/g, '</p><p>')
       .replace(/\n/g, '<br/>');
     html = `<p>${html}</p>`;
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    return this.sanitizer.sanitize(SecurityContext.HTML, html) || '';
   }
 }

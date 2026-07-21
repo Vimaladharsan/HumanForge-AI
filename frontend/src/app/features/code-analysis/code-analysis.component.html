@@ -39,7 +39,7 @@
     <mat-card class="panel">
       <mat-card-header>
         <mat-card-title>Your Code</mat-card-title>
-        <span class="char-count">{{ code.split('\n').length }} lines</span>
+        <span class="char-count">{{ lineCount }} {{ lineCount === 1 ? 'line' : 'lines' }}</span>
       </mat-card-header>
       <mat-card-content>
         <textarea [(ngModel)]="code" placeholder="Paste your code here..." class="code-input" rows="16" spellcheck="false"></textarea>

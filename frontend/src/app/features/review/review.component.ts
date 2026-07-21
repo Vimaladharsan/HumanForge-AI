@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AiService, AiProvider, ChatMessage } from '../../services/ai.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { AiService, AiProvider, ChatMessage } from '../../services/ai.service';
   templateUrl: './review.component.html',
   styleUrls: ['./review.component.scss']
 })
-export class ReviewComponent {
+export class ReviewComponent implements OnInit {
   content = '';
   fileType = 'text';
   selectedReviewType = 'general';
@@ -29,6 +29,11 @@ export class ReviewComponent {
   ];
 
   constructor(private aiService: AiService) {}
+
+  ngOnInit(): void {
+    const content = history.state?.content;
+    if (content) this.content = content;
+  }
 
   review(): void {
     if (!this.content.trim()) return;

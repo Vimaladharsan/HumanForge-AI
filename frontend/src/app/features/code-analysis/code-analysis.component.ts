@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AiService, AiProvider, ChatMessage } from '../../services/ai.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { AiService, AiProvider, ChatMessage } from '../../services/ai.service';
   templateUrl: './code-analysis.component.html',
   styleUrls: ['./code-analysis.component.scss']
 })
-export class CodeAnalysisComponent {
+export class CodeAnalysisComponent implements OnInit {
   code = '';
   selectedLanguage = 'javascript';
   selectedAnalysisType = 'review';
@@ -34,6 +34,15 @@ export class CodeAnalysisComponent {
   ];
 
   constructor(private aiService: AiService) {}
+
+  get lineCount(): number {
+    return this.code ? this.code.split('\n').length : 0;
+  }
+
+  ngOnInit(): void {
+    const content = history.state?.content;
+    if (content) this.code = content;
+  }
 
   analyze(): void {
     if (!this.code.trim()) return;

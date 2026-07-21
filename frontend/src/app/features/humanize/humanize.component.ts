@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AiService, AiProvider, HumanizeResult, ChatMessage } from '../../services/ai.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { AiService, AiProvider, HumanizeResult, ChatMessage } from '../../servic
   templateUrl: './humanize.component.html',
   styleUrls: ['./humanize.component.scss']
 })
-export class HumanizeComponent {
+export class HumanizeComponent implements OnInit {
   inputText = '';
   selectedTone = 'professional';
   selectedProvider: AiProvider = 'gemini';
@@ -33,6 +33,11 @@ export class HumanizeComponent {
   ];
 
   constructor(private aiService: AiService) {}
+
+  ngOnInit(): void {
+    const content = history.state?.content;
+    if (content) this.inputText = content;
+  }
 
   humanize(): void {
     if (!this.inputText.trim()) return;

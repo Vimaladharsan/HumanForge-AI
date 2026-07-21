@@ -1,0 +1,61 @@
+<div class="upload-container">
+  <div class="page-header">
+    <h1>Upload File</h1>
+    <p>Upload a document or code file, then send the extracted text to any AI feature</p>
+  </div>
+
+  <mat-card class="upload-card">
+    <div class="dropzone" [class.has-file]="selectedFile">
+      <input type="file" id="fileInput" (change)="onFileSelected($event)"
+        accept=".pdf,.doc,.docx,.txt,.md,.rtf,.odt,.java,.py,.js,.ts,.c,.cpp,.cs,.go,.rs,.php,.sql,.html,.css,.json,.xml,.yaml,.yml" />
+      <label for="fileInput" class="dropzone-label">
+        <mat-icon>upload_file</mat-icon>
+        <span *ngIf="!selectedFile">Click to choose a file</span>
+        <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
+      </label>
+    </div>
+
+    <div *ngIf="uploading" class="loading-state">
+      <mat-spinner diameter="36"></mat-spinner>
+      <p>Uploading and parsing...</p>
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      <mat-icon>error</mat-icon> {{ error }}
+    </div>
+  </mat-card>
+
+  <mat-card class="result-card" *ngIf="result">
+    <mat-card-header>
+      <mat-card-title>{{ result.originalName }}</mat-card-title>
+      <div class="file-meta">
+        <span class="chip">{{ result.fileType.category }}</span>
+        <span class="chip">{{ result.fileType.type }}</span>
+        <span class="size">{{ (result.size / 1024).toFixed(1) }} KB</span>
+      </div>
+      <button mat-icon-button (click)="reset()" matTooltip="Upload another file">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-card-header>
+    <mat-card-content>
+      <h4>Extracted Content</h4>
+      <div class="content-preview">{{ result.content }}</div>
+
+      <h4>Send to</h4>
+      <div class="send-to-row">
+        <button mat-stroked-button (click)="sendTo('humanize')">
+          <mat-icon>edit</mat-icon> AI Humanizer
+        </button>
+        <button mat-stroked-button (click)="sendTo('review')">
+          <mat-icon>rate_review</mat-icon> Document Review
+        </button>
+        <button mat-stroked-button (click)="sendTo('code-analysis')">
+          <mat-icon>code</mat-icon> Code Analysis
+        </button>
+        <button mat-stroked-button (click)="sendTo('resume')">
+          <mat-icon>work</mat-icon> Resume Optimizer
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

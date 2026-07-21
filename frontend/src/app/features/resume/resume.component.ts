@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AiService, AiProvider, ChatMessage } from '../../services/ai.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { AiService, AiProvider, ChatMessage } from '../../services/ai.service';
   templateUrl: './resume.component.html',
   styleUrls: ['./resume.component.scss']
 })
-export class ResumeComponent {
+export class ResumeComponent implements OnInit {
   content = '';
   selectedOptimizationType = 'content';
   selectedProvider: AiProvider = 'gemini';
@@ -27,6 +27,11 @@ export class ResumeComponent {
   ];
 
   constructor(private aiService: AiService) {}
+
+  ngOnInit(): void {
+    const content = history.state?.content;
+    if (content) this.content = content;
+  }
 
   optimize(): void {
     if (!this.content.trim()) return;
