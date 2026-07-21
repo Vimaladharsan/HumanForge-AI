@@ -1,0 +1,59 @@
+<div class="history-container">
+  <div class="page-header">
+    <h1>History</h1>
+    <p>Revisit your past humanizations, reviews, code analyses, and resume optimizations</p>
+  </div>
+
+  <div class="filter-row">
+    <button *ngFor="let f of filters" mat-stroked-button
+      [class.active]="selectedFeature === f.value"
+      (click)="setFilter(f.value)">
+      {{ f.label }}
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <mat-spinner diameter="36"></mat-spinner>
+    <p>Loading history...</p>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <mat-icon>error</mat-icon> {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && entries.length === 0" class="empty-state">
+    <mat-icon>history</mat-icon>
+    <p>No saved history yet. Run an AI feature while logged in and it'll show up here.</p>
+  </div>
+
+  <div class="entry-list" *ngIf="!loading && entries.length > 0">
+    <mat-card class="entry-card" *ngFor="let entry of entries" (click)="toggle(entry.id)">
+      <div class="entry-summary">
+        <mat-icon class="feature-icon">{{ featureIcon(entry.feature) }}</mat-icon>
+        <div class="entry-main">
+          <div class="entry-top-row">
+            <span class="feature-label">{{ featureLabel(entry.feature) }}</span>
+            <span class="entry-provider" *ngIf="entry.provider">{{ entry.provider }}</span>
+            <span class="entry-date">{{ entry.createdAt | date:'medium' }}</span>
+          </div>
+          <p class="entry-preview">{{ summary(entry) }}{{ summary(entry).length >= 100 ? '...' : '' }}</p>
+        </div>
+        <button mat-icon-button (click)="remove(entry.id, $event)" matTooltip="Delete">
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+        <mat-icon class="expand-icon">{{ expandedId === entry.id ? 'expand_less' : 'expand_more' }}</mat-icon>
+      </div>
+
+      <div class="entry-detail" *ngIf="expandedId === entry.id">
+        <div class="detail-block">
+          <h4>Input</h4>
+          <div class="detail-text">{{ inputText(entry) }}</div>
+        </div>
+        <div class="detail-block">
+          <h4>Output</h4>
+          <div class="detail-text">{{ outputText(entry) }}</div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

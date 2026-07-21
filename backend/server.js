@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs-extra');
+const database = require('./db/database');
 
 // Load environment variables
 dotenv.config();
@@ -54,9 +55,11 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`HumanForge AI Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+database.init().then(() => {
+  app.listen(PORT, () => {
+    console.log(`HumanForge AI Server running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  });
 });
 
 module.exports = app;

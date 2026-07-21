@@ -11,7 +11,9 @@ const routes: Routes = [
   { path: 'resume', loadChildren: () => import('./features/resume/resume.module').then(m => m.ResumeModule) },
   { path: 'analytics', loadChildren: () => import('./features/analytics/analytics.module').then(m => m.AnalyticsModule) },
   { path: 'versions', loadChildren: () => import('./features/versions/versions.module').then(m => m.VersionsModule) },
-  { path: 'export', loadChildren: () => import('./features/export/export.module').then(m => m.ExportModule) }
+  { path: 'export', loadChildren: () => import('./features/export/export.module').then(m => m.ExportModule) },
+  { path: '', loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule) },
+  { path: 'history', loadChildren: () => import('./features/history/history.module').then(m => m.HistoryModule) }
 ];
 
 @NgModule({

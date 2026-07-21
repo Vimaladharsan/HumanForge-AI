@@ -7,6 +7,8 @@ const aiRoutes = require('./aiRoutes');
 const analyticsRoutes = require('./analyticsRoutes');
 const versionRoutes = require('./versionRoutes');
 const exportRoutes = require('./exportRoutes');
+const authRoutes = require('./authRoutes');
+const historyRoutes = require('./historyRoutes');
 
 // Mount routes
 router.use('/files', fileRoutes);
@@ -14,5 +16,7 @@ router.use('/ai', aiRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/versions', versionRoutes);
 router.use('/export', exportRoutes);
+router.use('/auth', authRoutes);
+router.use('/history', historyRoutes);
 
 module.exports = router;

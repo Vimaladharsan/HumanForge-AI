@@ -1,7 +1,14 @@
 const aiService = require('../services/aiService');
 const aiDetectionService = require('../services/aiDetectionService');
+const historyService = require('../services/historyService');
 
 const DEFAULT_PROVIDER = process.env.DEFAULT_AI_PROVIDER || 'gemini';
+
+const saveHistory = (req, feature, provider, input, output, metadata) => {
+  if (req.user) {
+    historyService.saveEntry(req.user.id, feature, provider, input, output, metadata);
+  }
+};
 
 // Humanize text
 const humanizeText = async (req, res) => {
@@ -12,14 +19,10 @@ const humanizeText = async (req, res) => {
     const beforeScore = aiDetectionService.scoreText(text);
     const result = await aiService.humanizeText(text, tone, options, provider);
     const afterScore = aiDetectionService.scoreText(result.humanizedText);
+    const data = { ...result, detectionScores: { before: beforeScore, after: afterScore } };
 
-    res.json({
-      success: true,
-      data: {
-        ...result,
-        detectionScores: { before: beforeScore, after: afterScore }
-      }
-    });
+    saveHistory(req, 'humanize', provider, { text, tone }, data);
+    res.json({ success: true, data });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -31,6 +34,8 @@ const reviewDocument = async (req, res) => {
     const { content, fileType, reviewType, provider = DEFAULT_PROVIDER } = req.body;
     if (!content) return res.status(400).json({ success: false, error: 'content is required' });
     const result = await aiService.reviewDocument(content, fileType, reviewType, provider);
+
+    saveHistory(req, 'review', provider, { content, fileType, reviewType }, result);
     res.json({ success: true, data: result });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -43,6 +48,8 @@ const analyzeCode = async (req, res) => {
     const { code, language, analysisType, provider = DEFAULT_PROVIDER } = req.body;
     if (!code) return res.status(400).json({ success: false, error: 'code is required' });
     const result = await aiService.analyzeCode(code, language, analysisType, provider);
+
+    saveHistory(req, 'code-analysis', provider, { code, language, analysisType }, result);
     res.json({ success: true, data: result });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -55,6 +62,8 @@ const optimizeResume = async (req, res) => {
     const { content, optimizationType, provider = DEFAULT_PROVIDER } = req.body;
     if (!content) return res.status(400).json({ success: false, error: 'content is required' });
     const result = await aiService.optimizeResume(content, optimizationType, provider);
+
+    saveHistory(req, 'resume', provider, { content, optimizationType }, result);
     res.json({ success: true, data: result });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

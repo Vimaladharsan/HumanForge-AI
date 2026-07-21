@@ -4,10 +4,29 @@
       <h2>HumanForge AI</h2>
       <p class="tagline">Analyze. Improve. Humanize.</p>
     </div>
+
+    <div class="account-block" *ngIf="authService.currentUser$ | async as user; else loggedOut">
+      <mat-icon>account_circle</mat-icon>
+      <div class="account-info">
+        <span class="account-name">{{ user.name }}</span>
+        <button mat-button class="logout-link" (click)="logout()">Log out</button>
+      </div>
+    </div>
+    <ng-template #loggedOut>
+      <div class="account-block">
+        <a mat-stroked-button routerLink="/login" class="auth-btn">Log In</a>
+        <a mat-raised-button color="primary" routerLink="/register" class="auth-btn">Sign Up</a>
+      </div>
+    </ng-template>
+
     <mat-nav-list>
       <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
         <mat-icon>dashboard</mat-icon>
         <span>Dashboard</span>
+      </a>
+      <a mat-list-item routerLink="/history" routerLinkActive="active">
+        <mat-icon>manage_search</mat-icon>
+        <span>My History</span>
       </a>
       <a mat-list-item routerLink="/upload" routerLinkActive="active">
         <mat-icon>upload_file</mat-icon>
