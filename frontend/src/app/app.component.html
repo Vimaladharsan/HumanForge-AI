@@ -1,7 +1,13 @@
 <mat-sidenav-container class="app-container">
   <mat-sidenav mode="side" opened class="app-sidenav">
     <div class="sidenav-header">
-      <h2>HumanForge AI</h2>
+      <div class="header-top">
+        <h2>HumanForge AI</h2>
+        <button mat-icon-button class="theme-toggle" (click)="toggleTheme()"
+          [matTooltip]="(themeService.isDark$ | async) ? 'Switch to light mode' : 'Switch to dark mode'">
+          <mat-icon>{{ (themeService.isDark$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        </button>
+      </div>
       <p class="tagline">Analyze. Improve. Humanize.</p>
     </div>
 

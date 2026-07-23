@@ -7,7 +7,7 @@
 .page-header {
   margin-bottom: 20px;
   h1 { margin: 0 0 4px; font-size: 28px; font-weight: 600; }
-  p { margin: 0; color: #666; }
+  p { margin: 0; color: var(--hf-text-muted); }
 }
 
 .filter-row {
@@ -24,7 +24,7 @@
   align-items: center;
   gap: 12px;
   padding: 60px 0;
-  color: #999;
+  color: var(--hf-text-faint);
   mat-icon { font-size: 40px; width: 40px; height: 40px; }
 }
 
@@ -34,7 +34,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px;
-  background: #fff3f3;
+  background: var(--hf-error-bg);
   border-radius: 8px;
 }
 
@@ -74,29 +74,29 @@
 .entry-provider {
   font-size: 11px;
   text-transform: uppercase;
-  color: #888;
-  background: #f0f0f0;
+  color: var(--hf-text-faint);
+  background: var(--hf-surface-alt);
   padding: 2px 8px;
   border-radius: 10px;
 }
 
-.entry-date { font-size: 12px; color: #999; margin-left: auto; }
+.entry-date { font-size: 12px; color: var(--hf-text-faint); margin-left: auto; }
 
 .entry-preview {
   margin: 0;
   font-size: 13px;
-  color: #666;
+  color: var(--hf-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.expand-icon { color: #bbb; }
+.expand-icon { color: var(--hf-text-faint); }
 
 .entry-detail {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--hf-border-soft);
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
@@ -104,7 +104,7 @@
 }
 
 .detail-block {
-  h4 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; color: #888; letter-spacing: 0.5px; }
+  h4 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; color: var(--hf-text-faint); letter-spacing: 0.5px; }
 }
 
 .detail-text {
@@ -113,7 +113,7 @@
   white-space: pre-wrap;
   max-height: 240px;
   overflow-y: auto;
-  background: #fafafa;
+  background: var(--hf-surface-alt);
   padding: 10px;
   border-radius: 6px;
 }

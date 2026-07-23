@@ -7,12 +7,12 @@
     font-size: 32px;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #333;
+    color: var(--hf-text);
   }
   
   .subtitle {
     font-size: 16px;
-    color: #666;
+    color: var(--hf-text-muted);
     margin-bottom: 32px;
   }
   
@@ -45,7 +45,7 @@
       font-size: 24px;
       font-weight: 600;
       margin-bottom: 16px;
-      color: #333;
+      color: var(--hf-text);
     }
     
     .actions-grid {

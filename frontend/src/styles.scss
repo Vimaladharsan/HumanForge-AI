@@ -6,7 +6,8 @@
 $humanforge-primary: mat.define-palette(mat.$indigo-palette);
 $humanforge-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 $humanforge-warn: mat.define-palette(mat.$red-palette);
-$humanforge-theme: mat.define-light-theme((
+
+$humanforge-light-theme: mat.define-light-theme((
   color: (
     primary: $humanforge-primary,
     accent: $humanforge-accent,
@@ -14,7 +15,48 @@ $humanforge-theme: mat.define-light-theme((
   )
 ));
 
-@include mat.all-component-themes($humanforge-theme);
+$humanforge-dark-theme: mat.define-dark-theme((
+  color: (
+    primary: $humanforge-primary,
+    accent: $humanforge-accent,
+    warn: $humanforge-warn,
+  )
+));
+
+// Emit the full light theme (typography + density + color) as the default.
+@include mat.all-component-themes($humanforge-light-theme);
+
+// Under .dark-theme, swap only the color palette of every Material component.
+.dark-theme {
+  @include mat.all-component-colors($humanforge-dark-theme);
+}
+
+/* App-level theme tokens: light defaults, overridden under .dark-theme */
+:root {
+  --hf-bg: #f5f5f5;
+  --hf-surface: #ffffff;
+  --hf-surface-alt: #fafafa;
+  --hf-border: #e0e0e0;
+  --hf-border-soft: #eeeeee;
+  --hf-text: #333333;
+  --hf-text-muted: #666666;
+  --hf-text-faint: #999999;
+  --hf-error-bg: #fff3f3;
+  --hf-highlight-bg: #f5f6ff;
+}
+
+body.dark-theme {
+  --hf-bg: #121212;
+  --hf-surface: #1e1e1e;
+  --hf-surface-alt: #262626;
+  --hf-border: #3a3a3a;
+  --hf-border-soft: #333333;
+  --hf-text: #e8e8e8;
+  --hf-text-muted: #b0b0b0;
+  --hf-text-faint: #8a8a8a;
+  --hf-error-bg: #3b1f1f;
+  --hf-highlight-bg: #232a45;
+}
 
 * {
   box-sizing: border-box;
@@ -24,9 +66,42 @@ $humanforge-theme: mat.define-light-theme((
 
 body {
   font-family: 'Roboto', sans-serif;
-  background-color: #f5f5f5;
+  background-color: var(--hf-bg);
 }
 
 html, body {
   height: 100%;
+}
+
+/* Plain (non-Material) text areas share these surfaces so dark mode reaches them */
+.text-input,
+.code-input {
+  background: var(--hf-surface);
+  color: var(--hf-text);
+}
+
+/*
+ * Dark-mode treatment for the light pastel "semantic tint" surfaces
+ * (provider badges, sentiment/diff chips, warn/highlight cards). These live
+ * inside components with view-encapsulation, so the extra `body` element in
+ * the selector raises specificity above the component's own rule and wins.
+ */
+body.dark-theme {
+  .provider-badge { background: rgba(33, 150, 243, 0.18); color: #90caf9; }
+  .provider-badge.claude { background: rgba(156, 39, 176, 0.22); color: #ce93d8; }
+
+  .signal-chip.positive { background: rgba(76, 175, 80, 0.18); color: #a5d6a7; }
+  .signal-chip.negative { background: rgba(255, 152, 0, 0.18); color: #ffcc80; }
+
+  .stat-card.warn { background: rgba(255, 193, 7, 0.14); }
+  .stat-card.highlight { border-color: rgba(255, 255, 255, 0.12); }
+
+  .diff-old { background: rgba(244, 67, 54, 0.16); color: #ef9a9a; }
+  .diff-new { background: rgba(76, 175, 80, 0.16); color: #a5d6a7; }
+
+  .result-card { background: var(--hf-surface-alt); }
+
+  .error-message { color: #ff8a80; }
+
+  .dropzone { border-color: var(--hf-border); }
 }

@@ -7,7 +7,7 @@
 .page-header {
   margin-bottom: 24px;
   h1 { margin: 0 0 4px; font-size: 28px; font-weight: 600; }
-  p { margin: 0; color: #666; }
+  p { margin: 0; color: var(--hf-text-muted); }
 }
 
 .controls-card {
@@ -16,7 +16,7 @@
   .controls-row { display: flex; gap: 24px; align-items: flex-end; flex-wrap: wrap; }
   .control-group {
     display: flex; flex-direction: column; gap: 6px;
-    label { font-size: 12px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+    label { font-size: 12px; font-weight: 600; color: var(--hf-text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
   }
   .small-select { width: 160px; margin-bottom: -20px; }
   .provider-toggle { height: 40px; }
@@ -32,7 +32,7 @@
 
 .panel {
   mat-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .char-count { font-size: 12px; color: #999; }
+  .char-count { font-size: 12px; color: var(--hf-text-faint); }
   .panel-actions { display: flex; align-items: center; gap: 4px; }
 }
 
@@ -44,7 +44,7 @@
 }
 
 .text-input {
-  width: 100%; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px;
+  width: 100%; border: 1px solid var(--hf-border); border-radius: 8px; padding: 12px;
   font-size: 14px; line-height: 1.6; resize: vertical; font-family: inherit;
   box-sizing: border-box;
   &:focus { outline: none; border-color: #3f51b5; }
@@ -52,22 +52,22 @@
 
 .result-text {
   font-size: 14px; line-height: 1.7; min-height: 200px; word-break: break-word;
-  ::ng-deep { h2, h3 { margin: 12px 0 6px; } ul { padding-left: 20px; } li { margin-bottom: 4px; } code { background: #f5f5f5; padding: 2px 5px; border-radius: 3px; font-size: 13px; } pre { background: #f5f5f5; padding: 12px; border-radius: 6px; overflow-x: auto; } }
+  ::ng-deep { h2, h3 { margin: 12px 0 6px; } ul { padding-left: 20px; } li { margin-bottom: 4px; } code { background: var(--hf-surface-alt); padding: 2px 5px; border-radius: 3px; font-size: 13px; } pre { background: var(--hf-surface-alt); padding: 12px; border-radius: 6px; overflow-x: auto; } }
 }
 
 .placeholder-text {
-  color: #bbb; font-style: italic; min-height: 200px;
+  color: var(--hf-text-faint); font-style: italic; min-height: 200px;
   display: flex; align-items: center; justify-content: center;
 }
 
 .loading-state {
   display: flex; flex-direction: column; align-items: center; gap: 16px;
-  min-height: 200px; justify-content: center; color: #666;
+  min-height: 200px; justify-content: center; color: var(--hf-text-muted);
 }
 
 .error-message {
   color: #f44336; display: flex; align-items: center; gap: 8px;
-  padding: 12px; background: #fff3f3; border-radius: 8px; min-height: 200px;
+  padding: 12px; background: var(--hf-error-bg); border-radius: 8px; min-height: 200px;
 }
 
 .chat-card { mat-card-title { display: flex; align-items: center; gap: 8px; } }
@@ -88,8 +88,8 @@
   max-width: 75%; padding: 10px 14px; border-radius: 12px;
   font-size: 14px; line-height: 1.5; white-space: pre-wrap;
   .user & { background: #3f51b5; color: #fff; border-radius: 12px 12px 4px 12px; }
-  .assistant & { background: #f5f5f5; color: #333; border-radius: 12px 12px 12px 4px; }
-  &.typing { font-style: italic; color: #999; }
+  .assistant & { background: var(--hf-surface-alt); color: var(--hf-text); border-radius: 12px 12px 12px 4px; }
+  &.typing { font-style: italic; color: var(--hf-text-faint); }
 }
 
 .chat-input-row {

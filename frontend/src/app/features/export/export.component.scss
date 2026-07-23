@@ -7,14 +7,14 @@
 .page-header {
   margin-bottom: 20px;
   h1 { margin: 0 0 4px; font-size: 28px; font-weight: 600; }
-  p { margin: 0; color: #666; }
+  p { margin: 0; color: var(--hf-text-muted); }
 }
 
 .input-card { margin-bottom: 20px; }
 
 .text-input {
   width: 100%;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--hf-border);
   border-radius: 8px;
   padding: 12px;
   font-size: 14px;
@@ -40,7 +40,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px;
-  background: #fff3f3;
+  background: var(--hf-error-bg);
   border-radius: 8px;
   margin-bottom: 20px;
 }
@@ -62,4 +62,4 @@
 }
 
 .result-filename { font-weight: 600; font-size: 14px; }
-.result-meta { font-size: 12px; color: #888; }
+.result-meta { font-size: 12px; color: var(--hf-text-faint); }
