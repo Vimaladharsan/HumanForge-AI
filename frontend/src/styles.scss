@@ -87,9 +87,6 @@ html, body {
  * the selector raises specificity above the component's own rule and wins.
  */
 body.dark-theme {
-  .provider-badge { background: rgba(33, 150, 243, 0.18); color: #90caf9; }
-  .provider-badge.claude { background: rgba(156, 39, 176, 0.22); color: #ce93d8; }
-
   .signal-chip.positive { background: rgba(76, 175, 80, 0.18); color: #a5d6a7; }
   .signal-chip.negative { background: rgba(255, 152, 0, 0.18); color: #ffcc80; }
 

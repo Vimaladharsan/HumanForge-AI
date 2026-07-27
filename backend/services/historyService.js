@@ -1,18 +1,17 @@
 const db = require('../db/database');
 
-const saveEntry = (userId, feature, provider, input, output, metadata = {}) => {
+const saveEntry = (userId, feature, input, output, metadata = {}) => {
   const createdAt = new Date().toISOString();
   const id = db.run(
-    'INSERT INTO history (user_id, feature, provider, input, output, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [userId, feature, provider || null, JSON.stringify(input), JSON.stringify(output), JSON.stringify(metadata), createdAt]
+    'INSERT INTO history (user_id, feature, input, output, metadata, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+    [userId, feature, JSON.stringify(input), JSON.stringify(output), JSON.stringify(metadata), createdAt]
   );
-  return { id, userId, feature, provider, input, output, metadata, createdAt };
+  return { id, userId, feature, input, output, metadata, createdAt };
 };
 
 const parseRow = (row) => ({
   id: row.id,
   feature: row.feature,
-  provider: row.provider,
   input: JSON.parse(row.input),
   output: JSON.parse(row.output),
   metadata: row.metadata ? JSON.parse(row.metadata) : {},

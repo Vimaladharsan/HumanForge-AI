@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export type AiProvider = 'gemini' | 'claude';
-
 export interface ApiResponse<T> {
   success: boolean;
   data: T;
@@ -20,7 +18,6 @@ export interface HumanizeResult {
   originalText: string;
   humanizedText: string;
   tone: string;
-  provider: AiProvider;
   detectionScores: { before: DetectionScore; after: DetectionScore };
 }
 
@@ -32,7 +29,6 @@ export interface ChatMessage {
 export interface ChatResult {
   reply: string;
   history: ChatMessage[];
-  provider: AiProvider;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -41,27 +37,27 @@ export class AiService {
 
   constructor(private http: HttpClient) {}
 
-  humanize(text: string, tone: string, provider: AiProvider): Observable<ApiResponse<HumanizeResult>> {
-    return this.http.post<ApiResponse<HumanizeResult>>(`${this.base}/humanize`, { text, tone, provider });
+  humanize(text: string, tone: string): Observable<ApiResponse<HumanizeResult>> {
+    return this.http.post<ApiResponse<HumanizeResult>>(`${this.base}/humanize`, { text, tone });
   }
 
   detectAI(text: string): Observable<ApiResponse<DetectionScore>> {
     return this.http.post<ApiResponse<DetectionScore>>(`${this.base}/detect`, { text });
   }
 
-  reviewDocument(content: string, fileType: string, reviewType: string, provider: AiProvider): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.base}/review`, { content, fileType, reviewType, provider });
+  reviewDocument(content: string, fileType: string, reviewType: string): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.base}/review`, { content, fileType, reviewType });
   }
 
-  analyzeCode(code: string, language: string, analysisType: string, provider: AiProvider): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.base}/analyze-code`, { code, language, analysisType, provider });
+  analyzeCode(code: string, language: string, analysisType: string): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.base}/analyze-code`, { code, language, analysisType });
   }
 
-  optimizeResume(content: string, optimizationType: string, provider: AiProvider): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.base}/optimize-resume`, { content, optimizationType, provider });
+  optimizeResume(content: string, optimizationType: string): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.base}/optimize-resume`, { content, optimizationType });
   }
 
-  chat(message: string, history: ChatMessage[], context: string, provider: AiProvider): Observable<ApiResponse<ChatResult>> {
-    return this.http.post<ApiResponse<ChatResult>>(`${this.base}/chat`, { message, history, context, provider });
+  chat(message: string, history: ChatMessage[], context: string): Observable<ApiResponse<ChatResult>> {
+    return this.http.post<ApiResponse<ChatResult>>(`${this.base}/chat`, { message, history, context });
   }
 }

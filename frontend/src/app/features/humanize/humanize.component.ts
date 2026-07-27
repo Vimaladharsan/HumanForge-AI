@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AiService, AiProvider, HumanizeResult, ChatMessage } from '../../services/ai.service';
+import { AiService, HumanizeResult, ChatMessage } from '../../services/ai.service';
 
 @Component({
   selector: 'app-humanize',
@@ -9,7 +9,6 @@ import { AiService, AiProvider, HumanizeResult, ChatMessage } from '../../servic
 export class HumanizeComponent implements OnInit {
   inputText = '';
   selectedTone = 'professional';
-  selectedProvider: AiProvider = 'gemini';
   loading = false;
   error = '';
   result: HumanizeResult | null = null;
@@ -47,7 +46,7 @@ export class HumanizeComponent implements OnInit {
     this.showChat = false;
     this.chatHistory = [];
 
-    this.aiService.humanize(this.inputText, this.selectedTone, this.selectedProvider).subscribe({
+    this.aiService.humanize(this.inputText, this.selectedTone).subscribe({
       next: (res) => {
         this.loading = false;
         if (res.success) {
@@ -82,7 +81,7 @@ export class HumanizeComponent implements OnInit {
     this.chatHistory = [...this.chatHistory, { role: 'user', content: msg }];
     this.chatInput = '';
 
-    this.aiService.chat(msg, this.chatHistory.slice(0, -1), context, this.selectedProvider).subscribe({
+    this.aiService.chat(msg, this.chatHistory.slice(0, -1), context).subscribe({
       next: (res) => {
         this.chatLoading = false;
         if (res.success) {

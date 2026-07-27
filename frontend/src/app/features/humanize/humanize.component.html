@@ -7,19 +7,6 @@
   <!-- Controls -->
   <mat-card class="controls-card">
     <div class="controls-row">
-      <!-- Provider toggle -->
-      <div class="control-group">
-        <label>AI Provider</label>
-        <mat-button-toggle-group [(ngModel)]="selectedProvider" class="provider-toggle">
-          <mat-button-toggle value="gemini">
-            <mat-icon>bolt</mat-icon> Gemini
-          </mat-button-toggle>
-          <mat-button-toggle value="claude">
-            <mat-icon>psychology</mat-icon> Claude
-          </mat-button-toggle>
-        </mat-button-toggle-group>
-      </div>
-
       <!-- Tone selector -->
       <div class="control-group">
         <label>Tone</label>
@@ -79,7 +66,7 @@
         <div *ngIf="result" class="result-text">{{ result.humanizedText }}</div>
         <div *ngIf="loading" class="loading-state">
           <mat-spinner diameter="40"></mat-spinner>
-          <p>Processing with {{ selectedProvider === 'claude' ? 'Claude Sonnet' : 'Gemini 2.0 Flash' }}...</p>
+          <p>Processing with Gemini 2.0 Flash...</p>
         </div>
       </mat-card-content>
     </mat-card>

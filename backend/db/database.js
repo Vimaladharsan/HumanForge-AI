@@ -40,7 +40,6 @@ const init = async () => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
       feature TEXT NOT NULL,
-      provider TEXT,
       input TEXT NOT NULL,
       output TEXT NOT NULL,
       metadata TEXT,

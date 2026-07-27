@@ -12,17 +12,11 @@
 
 HumanForge AI is an AI-powered workspace designed to intelligently analyze, improve, review, and optimize documents and source code. Unlike conventional AI humanizers that focus only on rewriting text, HumanForge AI provides a complete document and code intelligence platform capable of processing multiple file formats through specialized AI workflows.
 
-It supports **two AI providers** — Google **Gemini** and Anthropic **Claude** — selectable per request, and combines AI-powered writing assistance, document analysis, code review, writing analytics, explainable AI, saved history, and version management into a single modern workspace with light and dark themes.
+It is powered by Google **Gemini** (`gemini-2.0-flash`) and combines AI-powered writing assistance, document analysis, code review, writing analytics, explainable AI, saved history, and version management into a single modern workspace with light and dark themes.
 
 ---
 
 ## Features
-
-### Multi-Provider AI
-
-- Switch between **Gemini** (`gemini-2.0-flash`) and **Claude** (`claude-sonnet-5`) per request via an in-app toggle
-- Default provider configurable through `DEFAULT_AI_PROVIDER`
-- A shared provider-agnostic service layer means every feature works with either model
 
 ### User Accounts & Saved History
 
@@ -89,7 +83,7 @@ It supports **two AI providers** — Google **Gemini** and Anthropic **Claude** 
 
 ### Backend
 - Node.js + Express.js
-- Google Gemini API (`@google/generative-ai`) and Anthropic Claude API (`@anthropic-ai/sdk`)
+- Google Gemini API (`@google/generative-ai`)
 - SQLite via **sql.js** (WebAssembly — no native build step required) for users & history
 - JWT auth (`jsonwebtoken`) with bcrypt password hashing (`bcryptjs`)
 - File parsing: pdf-parse, mammoth (DOCX), marked (Markdown), js-yaml
@@ -112,7 +106,7 @@ HumanForge-AI/
 │   ├── middleware/
 │   │   └── authMiddleware.js # requireAuth / optionalAuth (JWT)
 │   ├── services/            # Business logic
-│   │   ├── aiService.js         # Provider-agnostic Gemini + Claude calls, chat
+│   │   ├── aiService.js         # Gemini API calls, chat
 │   │   ├── aiDetectionService.js # Heuristic "humanness" scoring
 │   │   ├── authService.js
 │   │   ├── historyService.js
@@ -161,7 +155,7 @@ HumanForge-AI/
 
 - Node.js (v18 or higher)
 - npm
-- A Gemini API key and/or an Anthropic (Claude) API key
+- A Gemini API key ([get one here](https://aistudio.google.com/apikey))
 
 ### Backend Setup
 
@@ -185,12 +179,8 @@ cp .env.example .env
 PORT=5000
 NODE_ENV=development
 
-# Provide at least one of these:
+# Get a key at https://aistudio.google.com/apikey
 GEMINI_API_KEY=your_gemini_api_key_here
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
-
-# 'gemini' or 'claude'
-DEFAULT_AI_PROVIDER=gemini
 
 # Secret used to sign auth tokens — use a long random string
 JWT_SECRET=change_this_to_a_random_secret
@@ -235,7 +225,7 @@ The frontend runs on `http://localhost:4200`.
 - `GET /api/auth/me` — Current user (requires `Authorization: Bearer <token>`)
 
 ### AI Operations
-> These accept an optional `provider` field (`"gemini"` | `"claude"`). If a valid token is sent, successful results are auto-saved to history.
+> If a valid token is sent, successful results are auto-saved to history.
 - `POST /api/ai/humanize` — Humanize text with a tone (+ before/after detection scores)
 - `POST /api/ai/review` — Review a document
 - `POST /api/ai/analyze-code` — Analyze code
@@ -276,7 +266,7 @@ The frontend runs on `http://localhost:4200`.
 
 1. **(Optional) Sign in** to have your results saved to History
 2. **Upload a file** (or paste content directly into a feature)
-3. **Pick a provider** (Gemini or Claude) and a feature — Humanizer, Review, Code Analysis, Resume, Analytics
+3. **Pick a feature** — Humanizer, Review, Code Analysis, Resume, Analytics
 4. **Review results** with explanations, detection scores, and follow-up chat
 5. **Save versions**, revisit your **History**, or **Export** the output
 
@@ -302,7 +292,7 @@ npm test      # Karma/Jasmine
 
 ## Roadmap
 
-Recently shipped: multi-provider AI (Gemini + Claude), follow-up chat, AI-detection scoring, user accounts & saved history, dark mode, and fully wired Upload / Analytics / Versions / Export pages.
+Recently shipped: follow-up chat, AI-detection scoring, user accounts & saved history, dark mode, and fully wired Upload / Analytics / Versions / Export pages.
 
 Planned next:
 - Streaming (token-by-token) AI responses

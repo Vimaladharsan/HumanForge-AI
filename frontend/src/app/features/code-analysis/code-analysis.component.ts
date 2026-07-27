@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AiService, AiProvider, ChatMessage } from '../../services/ai.service';
+import { AiService, ChatMessage } from '../../services/ai.service';
 
 @Component({
   selector: 'app-code-analysis',
@@ -10,11 +10,9 @@ export class CodeAnalysisComponent implements OnInit {
   code = '';
   selectedLanguage = 'javascript';
   selectedAnalysisType = 'review';
-  selectedProvider: AiProvider = 'gemini';
   loading = false;
   error = '';
   result: string | null = null;
-  provider: AiProvider | null = null;
 
   chatHistory: ChatMessage[] = [];
   chatInput = '';
@@ -52,12 +50,11 @@ export class CodeAnalysisComponent implements OnInit {
     this.showChat = false;
     this.chatHistory = [];
 
-    this.aiService.analyzeCode(this.code, this.selectedLanguage, this.selectedAnalysisType, this.selectedProvider).subscribe({
+    this.aiService.analyzeCode(this.code, this.selectedLanguage, this.selectedAnalysisType).subscribe({
       next: (res) => {
         this.loading = false;
         if (res.success) {
           this.result = res.data.analysis;
-          this.provider = res.data.provider;
         } else {
           this.error = res.error || 'Something went wrong';
         }
@@ -81,7 +78,7 @@ export class CodeAnalysisComponent implements OnInit {
     this.chatHistory = [...this.chatHistory, { role: 'user', content: msg }];
     this.chatInput = '';
 
-    this.aiService.chat(msg, this.chatHistory.slice(0, -1), context, this.selectedProvider).subscribe({
+    this.aiService.chat(msg, this.chatHistory.slice(0, -1), context).subscribe({
       next: (res) => {
         this.chatLoading = false;
         if (res.success) this.chatHistory = res.data.history;

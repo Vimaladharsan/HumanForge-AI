@@ -33,7 +33,6 @@
         <div class="entry-main">
           <div class="entry-top-row">
             <span class="feature-label">{{ featureLabel(entry.feature) }}</span>
-            <span class="entry-provider" *ngIf="entry.provider">{{ entry.provider }}</span>
             <span class="entry-date">{{ entry.createdAt | date:'medium' }}</span>
           </div>
           <p class="entry-preview">{{ summary(entry) }}{{ summary(entry).length >= 100 ? '...' : '' }}</p>

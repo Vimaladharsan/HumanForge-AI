@@ -6,7 +6,6 @@ import { ApiResponse } from './auth.service';
 export interface HistoryEntry {
   id: number;
   feature: 'humanize' | 'review' | 'code-analysis' | 'resume';
-  provider: string;
   input: any;
   output: any;
   metadata: any;

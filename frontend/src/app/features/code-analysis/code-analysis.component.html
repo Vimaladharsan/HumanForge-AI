@@ -8,13 +8,6 @@
   <mat-card class="controls-card">
     <div class="controls-row">
       <div class="control-group">
-        <label>AI Provider</label>
-        <mat-button-toggle-group [(ngModel)]="selectedProvider" class="provider-toggle">
-          <mat-button-toggle value="gemini"><mat-icon>bolt</mat-icon> Gemini</mat-button-toggle>
-          <mat-button-toggle value="claude"><mat-icon>psychology</mat-icon> Claude</mat-button-toggle>
-        </mat-button-toggle-group>
-      </div>
-      <div class="control-group">
         <label>Language</label>
         <mat-form-field appearance="outline" class="small-select">
           <mat-select [(ngModel)]="selectedLanguage">
@@ -57,7 +50,6 @@
       <mat-card-header>
         <mat-card-title>Analysis Result</mat-card-title>
         <div class="panel-actions" *ngIf="result">
-          <span class="provider-badge" [class.claude]="provider === 'claude'">{{ provider }}</span>
           <button mat-icon-button (click)="copyResult()" matTooltip="Copy result"><mat-icon>content_copy</mat-icon></button>
           <button mat-icon-button (click)="showChat = true" matTooltip="Ask follow-up"><mat-icon>chat</mat-icon></button>
         </div>
@@ -68,7 +60,7 @@
         <div *ngIf="result" class="result-text" [innerHTML]="result | markdownToHtml"></div>
         <div *ngIf="loading" class="loading-state">
           <mat-spinner diameter="40"></mat-spinner>
-          <p>Analyzing with {{ selectedProvider === 'claude' ? 'Claude Sonnet' : 'Gemini 2.0 Flash' }}...</p>
+          <p>Analyzing with Gemini 2.0 Flash...</p>
         </div>
       </mat-card-content>
     </mat-card>
