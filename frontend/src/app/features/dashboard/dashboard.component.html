@@ -1,64 +1,82 @@
 <div class="dashboard-container">
-  <h1>Welcome to HumanForge AI</h1>
-  <p class="subtitle">Your Universal AI Document & Code Intelligence Platform</p>
-  
+  <div class="page-header hero">
+    <span class="eyebrow"><mat-icon>auto_awesome</mat-icon> Universal AI Workspace</span>
+    <h1>Welcome to HumanForge AI</h1>
+    <p class="subtitle">Analyze, improve, humanize, review, and explain — documents and code, in one place.</p>
+  </div>
+
   <div class="stats-grid">
     <mat-card class="stat-card">
-      <mat-card-header>
-        <mat-card-title>Documents Processed</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+      <div class="stat-icon"><mat-icon>description</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-label">Documents Processed</span>
         <div class="stat-value">0</div>
-      </mat-card-content>
+      </div>
     </mat-card>
-    
+
     <mat-card class="stat-card">
-      <mat-card-header>
-        <mat-card-title>Code Files Analyzed</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+      <div class="stat-icon"><mat-icon>code</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-label">Code Files Analyzed</span>
         <div class="stat-value">0</div>
-      </mat-card-content>
+      </div>
     </mat-card>
-    
+
     <mat-card class="stat-card">
-      <mat-card-header>
-        <mat-card-title>AI Suggestions</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+      <div class="stat-icon"><mat-icon>lightbulb</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-label">AI Suggestions</span>
         <div class="stat-value">0</div>
-      </mat-card-content>
+      </div>
     </mat-card>
-    
+
     <mat-card class="stat-card">
-      <mat-card-header>
-        <mat-card-title>Exports Generated</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
+      <div class="stat-icon"><mat-icon>download</mat-icon></div>
+      <div class="stat-body">
+        <span class="stat-label">Exports Generated</span>
         <div class="stat-value">0</div>
-      </mat-card-content>
+      </div>
     </mat-card>
   </div>
-  
+
   <div class="quick-actions">
     <h2>Quick Actions</h2>
     <div class="actions-grid">
-      <button mat-raised-button color="primary" routerLink="/upload">
-        <mat-icon>upload_file</mat-icon>
-        Upload File
-      </button>
-      <button mat-raised-button color="accent" routerLink="/humanize">
-        <mat-icon>edit</mat-icon>
-        Humanize Text
-      </button>
-      <button mat-raised-button color="warn" routerLink="/code-analysis">
-        <mat-icon>code</mat-icon>
-        Analyze Code
-      </button>
-      <button mat-raised-button routerLink="/review">
-        <mat-icon>rate_review</mat-icon>
-        Review Document
-      </button>
+      <a class="action-tile" routerLink="/upload">
+        <span class="tile-icon"><mat-icon>upload_file</mat-icon></span>
+        <span class="tile-text">
+          <strong>Upload File</strong>
+          <small>PDF, DOCX, code and more</small>
+        </span>
+        <mat-icon class="tile-arrow">arrow_forward</mat-icon>
+      </a>
+
+      <a class="action-tile" routerLink="/humanize">
+        <span class="tile-icon"><mat-icon>edit</mat-icon></span>
+        <span class="tile-text">
+          <strong>Humanize Text</strong>
+          <small>Rewrite in a natural tone</small>
+        </span>
+        <mat-icon class="tile-arrow">arrow_forward</mat-icon>
+      </a>
+
+      <a class="action-tile" routerLink="/code-analysis">
+        <span class="tile-icon"><mat-icon>code</mat-icon></span>
+        <span class="tile-text">
+          <strong>Analyze Code</strong>
+          <small>Review, refactor, find bugs</small>
+        </span>
+        <mat-icon class="tile-arrow">arrow_forward</mat-icon>
+      </a>
+
+      <a class="action-tile" routerLink="/review">
+        <span class="tile-icon"><mat-icon>rate_review</mat-icon></span>
+        <span class="tile-text">
+          <strong>Review Document</strong>
+          <small>Grammar, clarity, structure</small>
+        </span>
+        <mat-icon class="tile-arrow">arrow_forward</mat-icon>
+      </a>
     </div>
   </div>
 </div>

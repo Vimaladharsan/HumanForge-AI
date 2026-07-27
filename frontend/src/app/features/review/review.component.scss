@@ -39,7 +39,7 @@
   width: 100%; border: 1px solid var(--hf-border); border-radius: 8px; padding: 12px;
   font-size: 14px; line-height: 1.6; resize: vertical; font-family: inherit;
   box-sizing: border-box;
-  &:focus { outline: none; border-color: #3f51b5; }
+  &:focus { outline: none; border-color: var(--hf-brand-1); }
 }
 
 .result-text {
@@ -72,14 +72,14 @@
 .chat-message {
   display: flex; gap: 10px; align-items: flex-start;
   mat-icon { margin-top: 4px; flex-shrink: 0; }
-  &.user { flex-direction: row-reverse; mat-icon { color: #3f51b5; } }
+  &.user { flex-direction: row-reverse; mat-icon { color: var(--hf-brand-1); } }
   &.assistant mat-icon { color: #4caf50; }
 }
 
 .message-bubble {
   max-width: 75%; padding: 10px 14px; border-radius: 12px;
   font-size: 14px; line-height: 1.5; white-space: pre-wrap;
-  .user & { background: #3f51b5; color: #fff; border-radius: 12px 12px 4px 12px; }
+  .user & { background: var(--hf-gradient); color: #fff; border-radius: 12px 12px 4px 12px; }
   .assistant & { background: var(--hf-surface-alt); color: var(--hf-text); border-radius: 12px 12px 12px 4px; }
   &.typing { font-style: italic; color: var(--hf-text-faint); }
 }
