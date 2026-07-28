@@ -12,7 +12,7 @@
 
 HumanForge AI is an AI-powered workspace designed to intelligently analyze, improve, review, and optimize documents and source code. Unlike conventional AI humanizers that focus only on rewriting text, HumanForge AI provides a complete document and code intelligence platform capable of processing multiple file formats through specialized AI workflows.
 
-It is powered by Google **Gemini** (`gemini-2.0-flash`) and combines AI-powered writing assistance, document analysis, code review, writing analytics, explainable AI, saved history, and version management into a single modern workspace with light and dark themes.
+It is powered by Google **Gemini** (`gemini-2.0-flash`) and combines AI-powered writing assistance, document analysis, code review, writing analytics, explainable AI, saved history, and version management into a single workspace — wrapped in a glassmorphic, gradient-accented interface with full light and dark themes.
 
 ---
 
@@ -72,6 +72,14 @@ It is powered by Google **Gemini** (`gemini-2.0-flash`) and combines AI-powered 
 
 - Export processed content as **PDF, DOCX, Markdown, TXT, or HTML**, then download the generated file
 
+### Interface & Design System
+
+- **Glassmorphic UI** — frosted translucent panels (`backdrop-filter`) over an animated aurora backdrop
+- Gradient brand identity (violet → purple → blue) carried through headings, buttons, icons, and the active nav state
+- Centralised design tokens (color, glass, glow, shadow, radius) as CSS custom properties, with full light/dark pairs
+- **Inter** for UI type, **JetBrains Mono** for code input
+- Hover lift, focus glow, and gradient-text animations — all disabled under `prefers-reduced-motion`
+
 ### Dark Mode
 
 - Light/dark toggle in the sidebar, persisted to `localStorage`
@@ -91,8 +99,9 @@ It is powered by Google **Gemini** (`gemini-2.0-flash`) and combines AI-powered 
 
 ### Frontend
 - Angular 17 + TypeScript
-- Angular Material (light & dark theming)
-- SCSS with CSS custom-property theme tokens
+- Angular Material 17 (deep-purple/indigo palette, light & dark theming)
+- SCSS with a CSS custom-property design-token layer (glass, gradient, glow, shape)
+- Google Fonts: Inter (UI) and JetBrains Mono (code)
 
 ---
 
@@ -292,7 +301,7 @@ npm test      # Karma/Jasmine
 
 ## Roadmap
 
-Recently shipped: follow-up chat, AI-detection scoring, user accounts & saved history, dark mode, and fully wired Upload / Analytics / Versions / Export pages.
+Recently shipped: a glassmorphic UI redesign with a gradient design-token system, follow-up chat, AI-detection scoring, user accounts & saved history, dark mode, and fully wired Upload / Analytics / Versions / Export pages.
 
 Planned next:
 - Streaming (token-by-token) AI responses
