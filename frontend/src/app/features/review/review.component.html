@@ -32,13 +32,15 @@
         <span class="char-count">{{ content.length }} chars</span>
       </mat-card-header>
       <mat-card-content>
-        <textarea [(ngModel)]="content" placeholder="Paste your document text here..." class="text-input" rows="16"></textarea>
+        <textarea [(ngModel)]="content" (keydown.control.enter)="review()" (keydown.meta.enter)="review()"
+          placeholder="Paste your document text here..." class="text-input" rows="16"></textarea>
       </mat-card-content>
       <mat-card-actions>
         <button mat-raised-button color="primary" (click)="review()" [disabled]="loading || !content.trim()">
           <mat-icon>{{ loading ? 'hourglass_empty' : 'rate_review' }}</mat-icon>
           {{ loading ? 'Reviewing...' : 'Review Document' }}
         </button>
+        <span class="run-hint"><kbd>Ctrl</kbd>+<kbd>Enter</kbd></span>
       </mat-card-actions>
     </mat-card>
 

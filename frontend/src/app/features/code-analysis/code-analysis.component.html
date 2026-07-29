@@ -35,13 +35,15 @@
         <span class="char-count">{{ lineCount }} {{ lineCount === 1 ? 'line' : 'lines' }}</span>
       </mat-card-header>
       <mat-card-content>
-        <textarea [(ngModel)]="code" placeholder="Paste your code here..." class="code-input" rows="16" spellcheck="false"></textarea>
+        <textarea [(ngModel)]="code" (keydown.control.enter)="analyze()" (keydown.meta.enter)="analyze()"
+          placeholder="Paste your code here..." class="code-input" rows="16" spellcheck="false"></textarea>
       </mat-card-content>
       <mat-card-actions>
         <button mat-raised-button color="primary" (click)="analyze()" [disabled]="loading || !code.trim()">
           <mat-icon>{{ loading ? 'hourglass_empty' : 'code' }}</mat-icon>
           {{ loading ? 'Analyzing...' : 'Analyze' }}
         </button>
+        <span class="run-hint"><kbd>Ctrl</kbd>+<kbd>Enter</kbd></span>
       </mat-card-actions>
     </mat-card>
 

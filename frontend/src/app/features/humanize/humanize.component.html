@@ -30,6 +30,8 @@
       <mat-card-content>
         <textarea
           [(ngModel)]="inputText"
+          (keydown.control.enter)="humanize()"
+          (keydown.meta.enter)="humanize()"
           placeholder="Paste your AI-generated text here..."
           class="text-input"
           rows="12">
@@ -40,6 +42,7 @@
           <mat-icon>{{ loading ? 'hourglass_empty' : 'auto_fix_high' }}</mat-icon>
           {{ loading ? 'Humanizing...' : 'Humanize' }}
         </button>
+        <span class="run-hint"><kbd>Ctrl</kbd>+<kbd>Enter</kbd></span>
       </mat-card-actions>
     </mat-card>
 

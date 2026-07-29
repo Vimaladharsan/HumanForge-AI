@@ -24,13 +24,15 @@
         <span class="char-count">{{ content.length }} chars</span>
       </mat-card-header>
       <mat-card-content>
-        <textarea [(ngModel)]="content" placeholder="Paste your resume text here..." class="text-input" rows="16"></textarea>
+        <textarea [(ngModel)]="content" (keydown.control.enter)="optimize()" (keydown.meta.enter)="optimize()"
+          placeholder="Paste your resume text here..." class="text-input" rows="16"></textarea>
       </mat-card-content>
       <mat-card-actions>
         <button mat-raised-button color="primary" (click)="optimize()" [disabled]="loading || !content.trim()">
           <mat-icon>{{ loading ? 'hourglass_empty' : 'work' }}</mat-icon>
           {{ loading ? 'Optimizing...' : 'Optimize Resume' }}
         </button>
+        <span class="run-hint"><kbd>Ctrl</kbd>+<kbd>Enter</kbd></span>
       </mat-card-actions>
     </mat-card>
 

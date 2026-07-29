@@ -378,6 +378,29 @@ body.dark-theme .mat-mdc-unelevated-button.mat-accent {
 
 .panel-actions .mat-mdc-icon-button { color: var(--hf-text-muted); }
 
+/* Keyboard shortcut hint beside a panel's primary action */
+.run-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 10px;
+  font-size: 11.5px;
+  color: var(--hf-text-faint);
+  user-select: none;
+
+  kbd {
+    font-family: inherit;
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 3px 6px;
+    border-radius: 5px;
+    border: 1px solid var(--hf-glass-border);
+    background: var(--hf-surface-alt);
+    color: var(--hf-text-muted);
+  }
+}
+
 .placeholder-text { color: var(--hf-text-faint); }
 
 .loading-state { color: var(--hf-text-muted); }
