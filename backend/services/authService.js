@@ -7,8 +7,13 @@ const JWT_EXPIRES_IN = '7d';
 
 const toPublicUser = (user) => ({ id: user.id, email: user.email, name: user.name });
 
+// Email is the login identifier, so it is matched case-insensitively — otherwise
+// "Sam@x.com" registers a second account and then fails to log in as "sam@x.com".
+const normalizeEmail = (email) => String(email || '').trim().toLowerCase();
+
 const register = async (email, password, name) => {
-  const existing = db.get('SELECT id FROM users WHERE email = ?', [email]);
+  email = normalizeEmail(email);
+  const existing = db.get('SELECT id FROM users WHERE lower(email) = ?', [email]);
   if (existing) {
     throw new Error('An account with this email already exists');
   }
@@ -26,7 +31,7 @@ const register = async (email, password, name) => {
 };
 
 const login = async (email, password) => {
-  const user = db.get('SELECT * FROM users WHERE email = ?', [email]);
+  const user = db.get('SELECT * FROM users WHERE lower(email) = ?', [normalizeEmail(email)]);
   if (!user) {
     throw new Error('Invalid email or password');
   }

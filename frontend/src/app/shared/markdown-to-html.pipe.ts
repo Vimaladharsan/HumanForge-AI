@@ -7,7 +7,13 @@ export class MarkdownToHtmlPipe implements PipeTransform {
 
   transform(value: string | null): string {
     if (!value) return '';
+    // Escape first: AI answers routinely contain angle brackets (HTML snippets,
+    // generics like List<String>). Without this they are parsed as real tags and
+    // then stripped by the sanitizer, silently deleting the code being shown.
     let html = value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
       // Code blocks
       .replace(/```(\w*)\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
       // Inline code

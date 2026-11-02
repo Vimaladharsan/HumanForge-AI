@@ -3,7 +3,10 @@ const promptEngine = require('./promptEngine');
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
-const GEMINI_MODEL = 'gemini-2.0-flash';
+// Google retires model versions, and a retired id makes every AI feature fail
+// with a 404 (gemini-2.0-flash did exactly that). Override with GEMINI_MODEL
+// when this one is retired, or to track an alias such as gemini-flash-latest.
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 
 // Generate text via Gemini
 const generate = async (prompt) => {
@@ -90,7 +93,28 @@ const chat = async (message, history = [], context = '') => {
     const systemPrefix = context
       ? `You are a helpful AI assistant. Previous analysis context:\n\n${context}\n\n`
       : '';
-    const reply = await generate(`${systemPrefix}${message}`);
+
+    // Replay the prior turns so follow-ups ("what about the second point?")
+    // actually resolve against the conversation instead of being sent alone.
+    const contents = [];
+    for (const turn of history) {
+      if (!turn || typeof turn.content !== 'string') continue;
+      const role = turn.role === 'assistant' ? 'model' : 'user';
+      // Gemini requires the transcript to start with a user turn.
+      if (!contents.length && role !== 'user') continue;
+      contents.push({ role, parts: [{ text: turn.content }] });
+    }
+    contents.push({ role: 'user', parts: [{ text: message }] });
+
+    // The analysis context belongs on the opening turn, not on every message.
+    if (systemPrefix) {
+      contents[0].parts = [{ text: `${systemPrefix}${contents[0].parts[0].text}` }];
+    }
+
+    const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
+    const result = await model.generateContent({ contents });
+    const reply = result.response.text();
+
     return {
       reply,
       history: [...history, { role: 'user', content: message }, { role: 'assistant', content: reply }]

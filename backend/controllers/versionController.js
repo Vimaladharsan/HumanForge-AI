@@ -1,5 +1,8 @@
 const versionService = require('../services/versionService');
 
+// A rejected documentId/versionId is a bad request, not a server fault.
+const statusFor = (error) => /Invalid (documentId|versionId|version1|version2)/.test(error.message) ? 400 : 500;
+
 // Save version
 const saveVersion = async (req, res) => {
   try {
@@ -10,7 +13,7 @@ const saveVersion = async (req, res) => {
       data: result
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(statusFor(error)).json({
       success: false,
       error: error.message
     });
@@ -27,7 +30,7 @@ const getVersions = async (req, res) => {
       data: versions
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(statusFor(error)).json({
       success: false,
       error: error.message
     });
@@ -61,7 +64,7 @@ const compareVersions = async (req, res) => {
       data: comparison
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(statusFor(error)).json({
       success: false,
       error: error.message
     });
@@ -78,7 +81,7 @@ const restoreVersion = async (req, res) => {
       data: result
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(statusFor(error)).json({
       success: false,
       error: error.message
     });

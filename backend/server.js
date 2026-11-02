@@ -60,6 +60,10 @@ database.init().then(() => {
     console.log(`HumanForge AI Server running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   });
+}).catch((error) => {
+  // Without this the process exits on an unhandled rejection and never says why.
+  console.error('Failed to initialise the database:', error);
+  process.exit(1);
 });
 
 module.exports = app;

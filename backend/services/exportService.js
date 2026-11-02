@@ -13,7 +13,11 @@ fs.ensureDirSync(exportsDir);
 const exportDocument = async (content, format, filename, options = {}) => {
   try {
     const exportId = uuidv4();
-    const baseFilename = filename.replace(/\.[^/.]+$/, '');
+    // Strip any directory parts: the caller-supplied name must not be able to
+    // steer the write outside the exports directory.
+    const baseFilename = path.basename(String(filename || 'document'))
+      .replace(/\.[^/.]+$/, '')
+      .replace(/[^A-Za-z0-9._-]/g, '_') || 'document';
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const exportFilename = `${baseFilename}_exported_${timestamp}.${format}`;
     const exportPath = path.join(exportsDir, exportFilename);
@@ -99,28 +103,32 @@ const exportToDOCX = async (content, outputPath, options = {}) => {
   return new Promise((resolve, reject) => {
     try {
       const docx = officegen('docx');
-      
+
       // Set document properties
       docx.creator = options.creator || 'HumanForge AI';
       docx.title = options.title || 'Exported Document';
       docx.subject = options.subject || 'Document Export';
-      
-      const out = fs.createWriteStream(outputPath);
-      docx.generate(out);
-      
-      // Add title if provided
+
+      // Build the document BEFORE generating: generate() starts serialising
+      // immediately, so paragraphs added afterwards never make it into the file.
       if (options.title) {
         const titleP = docx.createP();
         titleP.addText(options.title, { bold: true, size: 24 });
         docx.createP();
       }
-      
-      // Add content
-      const pObj = docx.createP();
-      pObj.addText(content);
-      
+
+      // Blank lines are dropped unless each paragraph is created separately.
+      const paragraphs = String(content).split(/\n/);
+      for (const paragraph of paragraphs) {
+        const pObj = docx.createP();
+        if (paragraph.trim()) pObj.addText(paragraph);
+      }
+
+      const out = fs.createWriteStream(outputPath);
       out.on('finish', () => resolve(outputPath));
       out.on('error', reject);
+      docx.on('error', reject);
+      docx.generate(out);
     } catch (error) {
       reject(error);
     }
@@ -161,9 +169,19 @@ const exportToTXT = async (content, outputPath, options = {}) => {
   return outputPath;
 };
 
+// Escape text destined for an HTML document so markup in the user's content
+// renders as text instead of being injected into the exported page.
+const escapeHTML = (value) => String(value)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+
 // Export to HTML
 const exportToHTML = async (content, outputPath, options = {}) => {
-  const title = options.title || 'Exported Document';
+  const title = escapeHTML(options.title || 'Exported Document');
+  const body = escapeHTML(content);
   const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -191,7 +209,7 @@ const exportToHTML = async (content, outputPath, options = {}) => {
 <body>
     <h1>${title}</h1>
     <div class="content">
-        ${content.replace(/\n/g, '<br>\n')}
+        ${body.replace(/\n/g, '<br>\n')}
     </div>
 </body>
 </html>`;

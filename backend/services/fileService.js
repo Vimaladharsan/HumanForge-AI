@@ -155,13 +155,17 @@ const processFile = async (req) => {
         return reject(err);
       }
       
+      const file = req.file;
+      if (!file) {
+        return reject(new Error('No file was uploaded'));
+      }
+
       try {
-        const file = req.file;
         const fileType = detectFileType(file.originalname);
-        
+
         // Parse file content based on type
         const content = await parseFileContent(file.path, fileType);
-        
+
         // Handle different content return types
         let textContent = content;
         let metadata = {};
@@ -183,7 +187,6 @@ const processFile = async (req) => {
           fileId: uuidv4(),
           originalName: file.originalname,
           filename: file.filename,
-          path: file.path,
           size: file.size,
           mimetype: file.mimetype,
           fileType: fileType,
@@ -192,6 +195,10 @@ const processFile = async (req) => {
         });
       } catch (error) {
         reject(error);
+      } finally {
+        // The upload is only a staging copy — its text has been extracted and
+        // returned, so drop it instead of letting uploads/ grow without bound.
+        fs.remove(file.path).catch(() => {});
       }
     });
   });

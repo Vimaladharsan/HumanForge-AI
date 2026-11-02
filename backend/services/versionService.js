@@ -7,9 +7,20 @@ const versionsDir = path.join(__dirname, '../versions');
 // Ensure versions directory exists
 fs.ensureDirSync(versionsDir);
 
+// Document and version ids are used as path segments, so they must not be able
+// to contain separators or traversal sequences.
+const safeId = (value, label) => {
+  const id = String(value ?? '');
+  if (!id || id === '.' || id === '..' || !/^[A-Za-z0-9._-]+$/.test(id)) {
+    throw new Error(`Invalid ${label}`);
+  }
+  return id;
+};
+
 // Save version
 const saveVersion = async (documentId, content, metadata = {}) => {
   try {
+    documentId = safeId(documentId, 'documentId');
     const versionId = uuidv4();
     const timestamp = new Date().toISOString();
     
@@ -58,6 +69,7 @@ const saveVersion = async (documentId, content, metadata = {}) => {
 // Get versions for a document
 const getVersions = async (documentId) => {
   try {
+    documentId = safeId(documentId, 'documentId');
     const versionPath = path.join(versionsDir, documentId);
     const indexPath = path.join(versionPath, 'index.json');
     
@@ -75,6 +87,8 @@ const getVersions = async (documentId) => {
 // Get a single version's full content
 const getVersion = async (documentId, versionId) => {
   try {
+    documentId = safeId(documentId, 'documentId');
+    versionId = safeId(versionId, 'versionId');
     const versionFile = path.join(versionsDir, documentId, `${versionId}.json`);
     if (!await fs.pathExists(versionFile)) {
       throw new Error('Version not found');
@@ -88,6 +102,9 @@ const getVersion = async (documentId, versionId) => {
 // Compare two versions with detailed diff
 const compareVersions = async (documentId, version1, version2) => {
   try {
+    documentId = safeId(documentId, 'documentId');
+    version1 = safeId(version1, 'version1');
+    version2 = safeId(version2, 'version2');
     const versionPath = path.join(versionsDir, documentId);
     
     const version1Path = path.join(versionPath, `${version1}.json`);
@@ -193,6 +210,8 @@ const compareVersions = async (documentId, version1, version2) => {
 // Restore a version
 const restoreVersion = async (documentId, versionId) => {
   try {
+    documentId = safeId(documentId, 'documentId');
+    versionId = safeId(versionId, 'versionId');
     const versionPath = path.join(versionsDir, documentId);
     const versionFile = path.join(versionPath, `${versionId}.json`);
     
@@ -219,6 +238,7 @@ const restoreVersion = async (documentId, versionId) => {
 // Delete old versions (cleanup)
 const cleanupOldVersions = async (documentId, keepCount = 10) => {
   try {
+    documentId = safeId(documentId, 'documentId');
     const versionPath = path.join(versionsDir, documentId);
     const indexPath = path.join(versionPath, 'index.json');
     

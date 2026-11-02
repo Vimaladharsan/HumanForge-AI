@@ -12,7 +12,7 @@
 
 HumanForge AI is an AI-powered workspace designed to intelligently analyze, improve, review, and optimize documents and source code. Unlike conventional AI humanizers that focus only on rewriting text, HumanForge AI provides a complete document and code intelligence platform capable of processing multiple file formats through specialized AI workflows.
 
-It is powered by Google **Gemini** (`gemini-2.0-flash`) and combines AI-powered writing assistance, document analysis, code review, writing analytics, explainable AI, saved history, and version management into a single workspace — wrapped in a glassmorphic, gradient-accented interface with full light and dark themes.
+It is powered by Google **Gemini** (`gemini-3.8-flash` by default, overridable via `GEMINI_MODEL`) and combines AI-powered writing assistance, document analysis, code review, writing analytics, explainable AI, saved history, and version management into a single workspace — wrapped in a glassmorphic, gradient-accented interface with full light and dark themes.
 
 ---
 

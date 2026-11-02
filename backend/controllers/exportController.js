@@ -7,8 +7,14 @@ const exportsDir = path.join(__dirname, '../exports');
 // Export document
 const exportDocument = async (req, res) => {
   try {
-    const { content, format, filename } = req.body;
-    const result = await exportService.exportDocument(content, format, filename);
+    const { content, format, filename, options } = req.body;
+    if (typeof content !== 'string' || !content.trim()) {
+      return res.status(400).json({ success: false, error: 'content is required' });
+    }
+    if (!format) {
+      return res.status(400).json({ success: false, error: 'format is required' });
+    }
+    const result = await exportService.exportDocument(content, format, filename || 'document', options || {});
     res.json({
       success: true,
       data: result
