@@ -1,28 +1,9 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from './services/auth.service';
-import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  template: '<router-outlet></router-outlet>'
 })
 export class AppComponent {
   title = 'HumanForge AI';
-
-  constructor(
-    public authService: AuthService,
-    public themeService: ThemeService,
-    private router: Router
-  ) {}
-
-  toggleTheme(): void {
-    this.themeService.toggle();
-  }
-
-  logout(): void {
-    this.authService.logout();
-    this.router.navigate(['/dashboard']);
-  }
 }

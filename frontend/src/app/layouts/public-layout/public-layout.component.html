@@ -1,0 +1,72 @@
+<div class="site">
+  <header class="site-header">
+    <div class="shell">
+      <a class="brand" routerLink="/" (click)="closeMenu()">
+        <span class="brand-mark"><mat-icon>auto_awesome</mat-icon></span>
+        <span class="brand-name">HumanForge<span> AI</span></span>
+      </a>
+
+      <nav class="site-nav" [class.open]="menuOpen">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">Home</a>
+        <a routerLink="/features" routerLinkActive="active" (click)="closeMenu()">Features</a>
+        <a routerLink="/dashboard" (click)="closeMenu()">Workspace</a>
+      </nav>
+
+      <div class="header-actions">
+        <button mat-icon-button class="theme-toggle" (click)="toggleTheme()"
+          [matTooltip]="(themeService.isDark$ | async) ? 'Switch to light mode' : 'Switch to dark mode'">
+          <mat-icon>{{ (themeService.isDark$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        </button>
+        <a mat-stroked-button routerLink="/login" class="ghost-btn">Log In</a>
+        <a mat-raised-button color="primary" routerLink="/dashboard">Launch App</a>
+        <button mat-icon-button class="menu-toggle" (click)="menuOpen = !menuOpen" aria-label="Toggle navigation">
+          <mat-icon>{{ menuOpen ? 'close' : 'menu' }}</mat-icon>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <div class="footer-brand">
+        <span class="brand-mark"><mat-icon>auto_awesome</mat-icon></span>
+        <div>
+          <strong>HumanForge AI</strong>
+          <p>Analyze. Improve. Humanize. Review. Explain.</p>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a routerLink="/features">Features</a>
+        <a routerLink="/humanize">AI Humanizer</a>
+        <a routerLink="/code-analysis">Code Analysis</a>
+        <a routerLink="/analytics">Analytics</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Workspace</h4>
+        <a routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/upload">Upload File</a>
+        <a routerLink="/export">Export</a>
+        <a routerLink="/versions">Version History</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Account</h4>
+        <a routerLink="/login">Log In</a>
+        <a routerLink="/register">Sign Up</a>
+        <a routerLink="/history">My History</a>
+      </div>
+    </div>
+
+    <div class="shell footer-bottom">
+      <span>&copy; {{ year }} HumanForge AI. Released under the MIT License.</span>
+      <span class="powered">Powered by Google Gemini</span>
+    </div>
+  </footer>
+</div>

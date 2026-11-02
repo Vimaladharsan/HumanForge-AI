@@ -2,10 +2,10 @@
   <mat-sidenav mode="side" opened class="app-sidenav">
     <div class="sidenav-header">
       <div class="header-top">
-        <div class="brand">
+        <a class="brand" routerLink="/">
           <span class="brand-mark"><mat-icon>auto_awesome</mat-icon></span>
           <h2>HumanForge<span> AI</span></h2>
-        </div>
+        </a>
         <button mat-icon-button class="theme-toggle" (click)="toggleTheme()"
           [matTooltip]="(themeService.isDark$ | async) ? 'Switch to light mode' : 'Switch to dark mode'">
           <mat-icon>{{ (themeService.isDark$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
@@ -68,6 +68,10 @@
       <a mat-list-item routerLink="/export" routerLinkActive="active">
         <mat-icon>download</mat-icon>
         <span>Export</span>
+      </a>
+      <a mat-list-item routerLink="/" class="back-to-site">
+        <mat-icon>home</mat-icon>
+        <span>Back to site</span>
       </a>
     </mat-nav-list>
   </mat-sidenav>

@@ -1,0 +1,65 @@
+<section class="page-hero">
+  <div class="shell">
+    <span class="eyebrow"><mat-icon>widgets</mat-icon> Features</span>
+    <h1>Seven workflows, one pipeline</h1>
+    <p class="lede">
+      Each tool shares the same uploads, history, versioning and export layer — so work moves
+      between them without copy-pasting a thing.
+    </p>
+  </div>
+</section>
+
+<section class="shell feature-stack">
+  <article class="feature-row" *ngFor="let f of features; let i = index" [class.reverse]="i % 2 === 1">
+    <div class="row-text">
+      <span class="row-icon"><mat-icon>{{ f.icon }}</mat-icon></span>
+      <h2>{{ f.title }}</h2>
+      <p class="blurb">{{ f.blurb }}</p>
+      <ul>
+        <li *ngFor="let p of f.points">
+          <mat-icon>check_circle</mat-icon><span>{{ p }}</span>
+        </li>
+      </ul>
+      <a mat-raised-button color="primary" [routerLink]="f.link">
+        {{ f.cta }} <mat-icon>arrow_forward</mat-icon>
+      </a>
+    </div>
+
+    <div class="row-visual" aria-hidden="true">
+      <div class="glow"></div>
+      <mat-icon>{{ f.icon }}</mat-icon>
+    </div>
+  </article>
+</section>
+
+<section class="section alt">
+  <div class="shell">
+    <div class="section-head">
+      <h2>Built into the platform</h2>
+      <p>The parts that apply no matter which workflow you reach for.</p>
+    </div>
+
+    <div class="platform-grid">
+      <div class="platform-card" *ngFor="let p of platform">
+        <span class="p-icon"><mat-icon>{{ p.icon }}</mat-icon></span>
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.copy }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="shell">
+    <div class="cta-panel">
+      <h2>Start with any of them</h2>
+      <p>The workspace is open — no account required to try a workflow.</p>
+      <div class="cta-actions">
+        <a mat-raised-button color="primary" routerLink="/dashboard">
+          <mat-icon>rocket_launch</mat-icon> Launch the workspace
+        </a>
+        <a mat-stroked-button routerLink="/" class="ghost">Back to home</a>
+      </div>
+    </div>
+  </div>
+</section>

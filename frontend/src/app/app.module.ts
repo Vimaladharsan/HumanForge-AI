@@ -4,6 +4,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AppLayoutComponent } from './layouts/app-layout/app-layout.component';
+import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -14,7 +16,9 @@ import { AuthInterceptor } from './services/auth.interceptor';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AppLayoutComponent,
+    PublicLayoutComponent
   ],
   imports: [
     BrowserModule,

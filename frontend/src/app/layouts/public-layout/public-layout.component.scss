@@ -1,0 +1,204 @@
+.site {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell {
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--hf-glass-border);
+  background: var(--hf-glass);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+
+  .shell {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    height: 68px;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--hf-gradient);
+  box-shadow: 0 4px 14px rgba(124, 92, 255, 0.4);
+
+  mat-icon { font-size: 19px; width: 19px; height: 19px; color: #fff; }
+}
+
+.brand-name {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--hf-text);
+  white-space: nowrap;
+
+  span {
+    background: var(--hf-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: auto;
+
+  a {
+    position: relative;
+    padding: 8px 14px;
+    border-radius: var(--hf-radius-pill);
+    font-size: 14.5px;
+    font-weight: 550;
+    text-decoration: none;
+    color: var(--hf-text-muted);
+    transition: color 0.2s ease, background 0.2s ease;
+
+    &:hover { color: var(--hf-text); background: var(--hf-gradient-soft); }
+    &.active { color: var(--hf-brand-1); background: var(--hf-gradient-soft); }
+  }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+
+  .theme-toggle {
+    color: var(--hf-text-muted);
+    transition: color 0.2s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    &:hover { color: var(--hf-brand-1); transform: rotate(35deg); }
+  }
+
+  .ghost-btn { border-color: var(--hf-glass-border); }
+  .menu-toggle { display: none; color: var(--hf-text); }
+}
+
+/* ---------- Main ---------- */
+.site-main { flex: 1; }
+
+/* ---------- Footer ---------- */
+.site-footer {
+  margin-top: 80px;
+  border-top: 1px solid var(--hf-glass-border);
+  background: var(--hf-glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  padding-top: 48px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr repeat(3, 1fr);
+  gap: 32px;
+  padding-bottom: 36px;
+
+  @media (max-width: 860px) { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 520px) { grid-template-columns: 1fr; }
+}
+
+.footer-brand {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+
+  strong { font-size: 15px; color: var(--hf-text); }
+  p { margin: 4px 0 0; font-size: 13px; color: var(--hf-text-muted); max-width: 260px; }
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+
+  h4 {
+    margin: 0 0 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--hf-text-faint);
+  }
+
+  a {
+    font-size: 13.5px;
+    color: var(--hf-text-muted);
+    text-decoration: none;
+    width: fit-content;
+    transition: color 0.2s ease;
+    &:hover { color: var(--hf-brand-1); }
+  }
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 20px;
+  padding-bottom: 28px;
+  border-top: 1px solid var(--hf-border-soft);
+  font-size: 12.5px;
+  color: var(--hf-text-faint);
+
+  .powered { font-weight: 550; }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 780px) {
+  .site-header .shell { gap: 12px; }
+
+  .site-nav {
+    position: absolute;
+    top: 68px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    padding: 10px 16px 16px;
+    border-bottom: 1px solid var(--hf-glass-border);
+    /* Opaque, not glass: nesting a translucent panel inside the already
+       blurred header let the hero bleed through and hurt legibility. */
+    background: var(--hf-surface);
+    box-shadow: var(--hf-shadow-lg);
+    display: none;
+
+    &.open { display: flex; }
+    a { padding: 12px 14px; }
+  }
+
+  .header-actions {
+    margin-left: auto;
+    .ghost-btn, a[mat-raised-button] { display: none; }
+    .menu-toggle { display: inline-flex; }
+  }
+}

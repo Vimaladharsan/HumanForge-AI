@@ -39,6 +39,7 @@
     }
 
     .brand {
+      text-decoration: none;
       display: flex;
       align-items: center;
       gap: 11px;
@@ -150,6 +151,15 @@
 
   mat-nav-list {
     padding: 14px 12px;
+
+    .back-to-site {
+      margin-top: 10px;
+      padding-top: 4px;
+      border-top: 1px solid var(--hf-glass-border);
+      border-radius: 0 0 11px 11px;
+      color: var(--hf-text-faint);
+      font-size: 13.5px;
+    }
 
     a {
       position: relative;
