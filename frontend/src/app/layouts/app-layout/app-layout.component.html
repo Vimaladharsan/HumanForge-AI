@@ -1,5 +1,9 @@
 <mat-sidenav-container class="app-container">
-  <mat-sidenav mode="side" opened class="app-sidenav">
+  <mat-sidenav
+    class="app-sidenav"
+    [mode]="isHandset ? 'over' : 'side'"
+    [opened]="drawerOpen"
+    (closedStart)="drawerOpen = false">
     <div class="sidenav-header">
       <div class="header-top">
         <a class="brand" routerLink="/">
@@ -76,6 +80,20 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content class="app-content">
+    <!-- Only rendered on narrow screens, where the drawer is hidden by default. -->
+    <div class="mobile-bar" *ngIf="isHandset">
+      <button mat-icon-button (click)="toggleDrawer()" aria-label="Open navigation menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a class="brand" routerLink="/">
+        <span class="brand-mark"><mat-icon>auto_awesome</mat-icon></span>
+        <h2>HumanForge<span> AI</span></h2>
+      </a>
+      <button mat-icon-button (click)="toggleTheme()"
+        [attr.aria-label]="(themeService.isDark$ | async) ? 'Switch to light mode' : 'Switch to dark mode'">
+        <mat-icon>{{ (themeService.isDark$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
+    </div>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

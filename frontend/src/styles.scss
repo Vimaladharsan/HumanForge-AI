@@ -430,11 +430,200 @@ body.dark-theme {
   .dropzone { border-color: var(--hf-glass-border); }
 }
 
+/* ==========================================================================
+   Skeleton loaders
+   ========================================================================== */
+.hf-skeleton-block {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 4px 0 2px;
+}
+
+.hf-skeleton-line {
+  height: 12px;
+  border-radius: var(--hf-radius-pill);
+  /*
+   * Three stops, not two: a single highlight sliding across a flat base reads
+   * as a glare. The darker shoulders either side give the sweep a shape.
+   */
+  background: linear-gradient(
+    90deg,
+    var(--hf-surface-alt) 0%,
+    var(--hf-highlight-bg) 38%,
+    rgba(124, 92, 255, 0.16) 50%,
+    var(--hf-highlight-bg) 62%,
+    var(--hf-surface-alt) 100%
+  );
+  background-size: 300% 100%;
+  animation: hf-shimmer 1.5s ease-in-out infinite;
+}
+
+.hf-skeleton-caption {
+  margin-top: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--hf-text-faint);
+  letter-spacing: 0.01em;
+}
+
+@keyframes hf-shimmer {
+  0%   { background-position: 120% 50%; }
+  100% { background-position: -20% 50%; }
+}
+
+/* ==========================================================================
+   Empty states
+   ========================================================================== */
+.hf-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 34px 20px;
+  min-height: 190px;
+}
+
+.hf-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin-bottom: 14px;
+  border-radius: 18px;
+  background: var(--hf-gradient-soft);
+  border: 1px solid var(--hf-glass-border);
+  color: var(--hf-brand-1);
+
+  .mat-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 26px;
+    line-height: 26px;
+  }
+}
+
+.hf-empty-title {
+  font-size: 14.5px;
+  font-weight: 650;
+  color: var(--hf-text-muted);
+}
+
+.hf-empty-hint {
+  margin-top: 5px;
+  font-size: 13px;
+  line-height: 1.55;
+  max-width: 34ch;
+  color: var(--hf-text-faint);
+}
+
+/* ==========================================================================
+   Scroll reveal
+   ========================================================================== */
+.hf-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.hf-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* ==========================================================================
+   Focus visibility
+   --------------------------------------------------------------------------
+   :focus-visible only, so a mouse click never paints a ring, but keyboard
+   users always get one. Material strips its own outlines on several controls.
+   ========================================================================== */
+:focus-visible,
+.mat-mdc-button:focus-visible,
+.mat-mdc-raised-button:focus-visible,
+.mat-mdc-outlined-button:focus-visible,
+.mat-mdc-icon-button:focus-visible,
+a:focus-visible,
+textarea:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--hf-brand-1);
+  outline-offset: 2px;
+  border-radius: var(--hf-radius-sm);
+}
+
+/* ==========================================================================
+   Card lift
+   ========================================================================== */
+.mat-mdc-card.hf-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--hf-shadow-lg);
+  border-color: rgba(124, 92, 255, 0.3);
+}
+
+/* ==========================================================================
+   Snackbar / toast
+   ========================================================================== */
+.hf-snack {
+  --mdc-snackbar-container-color: var(--hf-glass-strong);
+  --mdc-snackbar-supporting-text-color: var(--hf-text);
+  --mat-snack-bar-button-color: var(--hf-brand-1);
+
+  .mdc-snackbar__surface {
+    backdrop-filter: blur(var(--hf-glass-blur)) saturate(140%);
+    -webkit-backdrop-filter: blur(var(--hf-glass-blur)) saturate(140%);
+    border: 1px solid var(--hf-glass-border);
+    border-radius: var(--hf-radius-sm) !important;
+    box-shadow: var(--hf-shadow-lg);
+  }
+}
+
+/* ==========================================================================
+   Result readability
+   ========================================================================== */
+.result-text,
+.markdown-body {
+  font-size: 14.5px;
+  line-height: 1.72;
+  color: var(--hf-text);
+}
+
+/* Fade freshly arrived output in rather than snapping it onto the page. */
+.result-text,
+.result-card {
+  animation: hf-fade-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes hf-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Score bars grow from zero when a result lands. */
+.score-bar {
+  transition: width 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ==========================================================================
+   Small screens
+   ========================================================================== */
+@media (max-width: 860px) {
+  .page-header h1 { font-size: 27px; }
+  .split-view { grid-template-columns: 1fr !important; }
+  .hf-empty { min-height: 150px; padding: 24px 14px; }
+}
+
 /* Respect reduced-motion: kill the ambient animations */
 @media (prefers-reduced-motion: reduce) {
   body::before,
-  .page-header h1 {
+  .page-header h1,
+  .hf-skeleton-line,
+  .result-text,
+  .result-card {
     animation: none;
   }
+
+  .hf-reveal { opacity: 1; transform: none; }
   * { transition-duration: 0.01ms !important; }
 }

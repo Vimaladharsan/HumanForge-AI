@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AiService, ChatMessage } from '../../services/ai.service';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'app-resume',
@@ -24,7 +25,7 @@ export class ResumeComponent implements OnInit {
     { value: 'structure', label: 'Structure & Format' },
   ];
 
-  constructor(private aiService: AiService) {}
+  constructor(private aiService: AiService, private toast: ToastService) {}
 
   ngOnInit(): void {
     const content = history.state?.content;
@@ -56,7 +57,7 @@ export class ResumeComponent implements OnInit {
   }
 
   copyResult(): void {
-    if (this.result) navigator.clipboard.writeText(this.result);
+    if (this.result) this.toast.copy(this.result, 'Suggestions copied');
   }
 
   sendChat(): void {

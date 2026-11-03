@@ -19,7 +19,7 @@
       </a>
     </div>
 
-    <div class="stat-strip">
+    <div class="stat-strip" hfReveal>
       <div class="stat" *ngFor="let s of stats">
         <strong>{{ s.value }}</strong>
         <span>{{ s.label }}</span>
@@ -31,13 +31,13 @@
 <!-- Highlights -->
 <section class="section">
   <div class="shell">
-    <div class="section-head">
+    <div class="section-head" hfReveal>
       <h2>Everything in one workspace</h2>
       <p>Seven workflows that share the same uploads, history and export pipeline.</p>
     </div>
 
     <div class="card-grid">
-      <a class="feature-card" *ngFor="let h of highlights" [routerLink]="h.link">
+      <a class="feature-card" *ngFor="let h of highlights; let i = index" [routerLink]="h.link" [hfReveal]="i * 70">
         <span class="card-icon"><mat-icon>{{ h.icon }}</mat-icon></span>
         <h3>{{ h.title }}</h3>
         <p>{{ h.copy }}</p>
@@ -50,13 +50,13 @@
 <!-- How it works -->
 <section class="section alt">
   <div class="shell">
-    <div class="section-head">
+    <div class="section-head" hfReveal>
       <h2>How it works</h2>
       <p>From raw draft to finished artefact in three steps.</p>
     </div>
 
     <div class="steps">
-      <div class="step" *ngFor="let s of steps">
+      <div class="step" *ngFor="let s of steps; let i = index" [hfReveal]="i * 90">
         <span class="step-n">{{ s.n }}</span>
         <h3>{{ s.title }}</h3>
         <p>{{ s.copy }}</p>
@@ -68,7 +68,7 @@
 <!-- Closing CTA -->
 <section class="section">
   <div class="shell">
-    <div class="cta-panel">
+    <div class="cta-panel" hfReveal>
       <h2>Ready to forge something better?</h2>
       <p>No setup beyond an API key. Your history is saved the moment you sign in.</p>
       <div class="cta-actions">

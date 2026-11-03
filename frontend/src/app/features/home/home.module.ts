@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { HomeComponent } from './home.component';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [HomeComponent],
   imports: [
-    CommonModule, MatButtonModule, MatIconModule,
+    CommonModule, MatButtonModule, MatIconModule, SharedModule,
     RouterModule.forChild([{ path: '', component: HomeComponent }]),
   ]
 })

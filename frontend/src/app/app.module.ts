@@ -12,6 +12,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthInterceptor } from './services/auth.interceptor';
 
 @NgModule({
@@ -30,7 +31,8 @@ import { AuthInterceptor } from './services/auth.interceptor';
     MatListModule,
     MatCardModule,
     MatButtonModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSnackBarModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }

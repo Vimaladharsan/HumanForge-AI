@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AiService, ChatMessage } from '../../services/ai.service';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'app-code-analysis',
@@ -31,7 +32,7 @@ export class CodeAnalysisComponent implements OnInit {
     { value: 'optimize', label: 'Optimize' },
   ];
 
-  constructor(private aiService: AiService) {}
+  constructor(private aiService: AiService, private toast: ToastService) {}
 
   get lineCount(): number {
     return this.code ? this.code.split('\n').length : 0;
@@ -67,7 +68,7 @@ export class CodeAnalysisComponent implements OnInit {
   }
 
   copyResult(): void {
-    if (this.result) navigator.clipboard.writeText(this.result);
+    if (this.result) this.toast.copy(this.result, 'Analysis copied');
   }
 
   sendChat(): void {

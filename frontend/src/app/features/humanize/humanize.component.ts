@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AiService, HumanizeResult, ChatMessage } from '../../services/ai.service';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'app-humanize',
@@ -31,7 +32,7 @@ export class HumanizeComponent implements OnInit {
     { value: 'concise', label: 'Concise' },
   ];
 
-  constructor(private aiService: AiService) {}
+  constructor(private aiService: AiService, private toast: ToastService) {}
 
   ngOnInit(): void {
     const content = history.state?.content;
@@ -64,7 +65,7 @@ export class HumanizeComponent implements OnInit {
 
   copyResult(): void {
     if (this.result?.humanizedText) {
-      navigator.clipboard.writeText(this.result.humanizedText);
+      this.toast.copy(this.result.humanizedText, 'Humanized text copied');
     }
   }
 

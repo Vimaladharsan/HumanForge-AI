@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AiService, ChatMessage } from '../../services/ai.service';
+import { ToastService } from '../../shared/toast.service';
 
 @Component({
   selector: 'app-review',
@@ -26,7 +27,7 @@ export class ReviewComponent implements OnInit {
     { value: 'business', label: 'Business' },
   ];
 
-  constructor(private aiService: AiService) {}
+  constructor(private aiService: AiService, private toast: ToastService) {}
 
   ngOnInit(): void {
     const content = history.state?.content;
@@ -58,7 +59,7 @@ export class ReviewComponent implements OnInit {
   }
 
   copyResult(): void {
-    if (this.result) navigator.clipboard.writeText(this.result);
+    if (this.result) this.toast.copy(this.result, 'Review copied');
   }
 
   sendChat(): void {

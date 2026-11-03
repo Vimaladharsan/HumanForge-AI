@@ -63,14 +63,12 @@
         <div *ngIf="error" class="error-message">
           <mat-icon>error</mat-icon> {{ error }}
         </div>
-        <div *ngIf="!result && !loading && !error" class="placeholder-text">
-          Your humanized text will appear here after clicking Humanize.
-        </div>
+        <hf-empty-state *ngIf="!result && !loading && !error"
+          icon="auto_fix_high"
+          title="No rewrite yet"
+          hint="Paste your text on the left and hit Humanize — the rewritten version lands here."></hf-empty-state>
         <div *ngIf="result" class="result-text">{{ result.humanizedText }}</div>
-        <div *ngIf="loading" class="loading-state">
-          <mat-spinner diameter="40"></mat-spinner>
-          <p>Processing with Gemini 2.0 Flash...</p>
-        </div>
+        <hf-skeleton *ngIf="loading" [lines]="6" label="Rewriting your text…"></hf-skeleton>
       </mat-card-content>
     </mat-card>
   </div>

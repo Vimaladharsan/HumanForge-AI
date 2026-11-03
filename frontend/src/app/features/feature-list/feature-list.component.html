@@ -10,7 +10,7 @@
 </section>
 
 <section class="shell feature-stack">
-  <article class="feature-row" *ngFor="let f of features; let i = index" [class.reverse]="i % 2 === 1">
+  <article class="feature-row" *ngFor="let f of features; let i = index" [class.reverse]="i % 2 === 1" hfReveal>
     <div class="row-text">
       <span class="row-icon"><mat-icon>{{ f.icon }}</mat-icon></span>
       <h2>{{ f.title }}</h2>
@@ -40,7 +40,7 @@
     </div>
 
     <div class="platform-grid">
-      <div class="platform-card" *ngFor="let p of platform">
+      <div class="platform-card" *ngFor="let p of platform; let i = index" [hfReveal]="i * 70">
         <span class="p-icon"><mat-icon>{{ p.icon }}</mat-icon></span>
         <h3>{{ p.title }}</h3>
         <p>{{ p.copy }}</p>

@@ -46,12 +46,12 @@
       </mat-card-header>
       <mat-card-content>
         <div *ngIf="error" class="error-message"><mat-icon>error</mat-icon> {{ error }}</div>
-        <div *ngIf="!result && !loading && !error" class="placeholder-text">Optimization suggestions will appear here.</div>
+        <hf-empty-state *ngIf="!result && !loading && !error"
+          icon="work_outline"
+          title="No suggestions yet"
+          hint="Paste your resume content and choose what to optimize, then run it to see suggestions here."></hf-empty-state>
         <div *ngIf="result" class="result-text" [innerHTML]="result | markdownToHtml"></div>
-        <div *ngIf="loading" class="loading-state">
-          <mat-spinner diameter="40"></mat-spinner>
-          <p>Optimizing with Gemini 2.0 Flash...</p>
-        </div>
+        <hf-skeleton *ngIf="loading" [lines]="7" label="Optimizing your resume…"></hf-skeleton>
       </mat-card-content>
     </mat-card>
   </div>
